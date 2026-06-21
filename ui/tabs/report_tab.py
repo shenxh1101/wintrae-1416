@@ -3,7 +3,7 @@ from datetime import datetime
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QGroupBox,
     QTableWidget, QTableWidgetItem, QHeaderView, QSplitter, QTextEdit,
-    QFrame, QListWidget, QListWidgetItem, QSizePolicy
+    QFrame, QListWidget, QListWidgetItem, QSizePolicy, QRadioButton, QButtonGroup
 )
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QFont
@@ -12,7 +12,7 @@ from models import Conversation, ReviewResult, QualityReport
 
 
 class ReportTab(QWidget):
-    generate_report_requested = pyqtSignal()
+    generate_report_requested = pyqtSignal(bool)
     export_report_requested = pyqtSignal(str)
 
     def __init__(self):
@@ -26,14 +26,18 @@ class ReportTab(QWidget):
         top_bar = QFrame()
         top_bar.setFrameShape(QFrame.StyledPanel)
         top_bar.setStyleSheet("background-color: #f5f5f5;")
-        top_layout = QHBoxLayout(top_bar)
+        top_layout = QVBoxLayout(top_bar)
 
-        self.summary_status = QLabel("等待生成报告...")
-        self.summary_status.setFont(self._bold_font(12))
+        mode_row = QHBoxLayout()
+        mode_label = QLabel("报告口径:")
+        mode_label.setFont(self._bold_font())
+        self.radio_auto = QRadioButton("🤖 仅自动规则 (全部用系统分)")
+        self.radio_manual = QRadioButton("👤 人工复核优先 (无人工分时用系统分)")
+        self.radio_manual.setChecked(True)
         self.btn_generate = QPushButton("📊 生成质检报告")
         self.btn_generate.setMinimumHeight(40)
         self.btn_generate.setStyleSheet("background-color: #673AB7; color: white; font-weight: bold;")
-        self.btn_generate.clicked.connect(lambda: self.generate_report_requested.emit())
+        self.btn_generate.clicked.connect(self._on_generate_clicked)
 
         self.btn_export = QPushButton("📥 导出Excel报告")
         self.btn_export.setMinimumHeight(40)
@@ -41,10 +45,33 @@ class ReportTab(QWidget):
         self.btn_export.clicked.connect(self._on_export_clicked)
         self.btn_export.setEnabled(False)
 
-        top_layout.addWidget(self.summary_status, 1)
-        top_layout.addWidget(self.btn_generate)
-        top_layout.addWidget(self.btn_export)
+        self.mode_group = QButtonGroup(self)
+        self.mode_group.addButton(self.radio_auto, 0)
+        self.mode_group.addButton(self.radio_manual, 1)
+
+        mode_row.addWidget(mode_label)
+        mode_row.addWidget(self.radio_auto)
+        mode_row.addWidget(self.radio_manual)
+        mode_row.addStretch()
+        mode_row.addWidget(self.btn_generate)
+        mode_row.addWidget(self.btn_export)
+        top_layout.addLayout(mode_row)
+
+        info_row = QHBoxLayout()
+        self.summary_status = QLabel("等待生成报告...")
+        self.summary_status.setFont(self._bold_font(12))
+        self.mode_hint = QLabel("")
+        self.mode_hint.setStyleSheet("color: #666;")
+        info_row.addWidget(self.summary_status)
+        info_row.addStretch()
+        info_row.addWidget(self.mode_hint)
+        top_layout.addLayout(info_row)
+
         layout.addWidget(top_bar)
+
+        self.radio_auto.toggled.connect(self._on_mode_changed)
+        self.radio_manual.toggled.connect(self._on_mode_changed)
+        self._update_mode_hint()
 
         splitter = QSplitter(Qt.Horizontal)
 
@@ -162,9 +189,29 @@ class ReportTab(QWidget):
             f"抽样数: {total} | 已复核: {reviewed} | 待复核: {total - reviewed}"
         )
 
+    def _update_mode_hint(self):
+        if self.radio_auto.isChecked():
+            self.mode_hint.setText(
+                "当前: 自动规则口径 - 所有样本使用系统评分，"
+                "无需人工复核即可生成完整报告"
+            )
+        else:
+            self.mode_hint.setText(
+                "当前: 人工复核优先 - 已复核样本用人工分，"
+                "未复核样本自动用系统分补充，确保数据完整"
+            )
+
+    def _on_mode_changed(self):
+        self._update_mode_hint()
+
+    def _on_generate_clicked(self):
+        prefer_manual = not self.radio_auto.isChecked()
+        self.generate_report_requested.emit(prefer_manual)
+
     def _on_export_clicked(self):
+        mode = "自动规则" if self.radio_auto.isChecked() else "人工优先"
         today = datetime.now().strftime("%Y%m%d")
-        default_name = f"质检报告_{today}.xlsx"
+        default_name = f"质检报告_{today}_{mode}.xlsx"
         self.export_report_requested.emit(default_name)
 
     def set_report(self, report: QualityReport):
@@ -173,8 +220,10 @@ class ReportTab(QWidget):
 
         overview_data = [
             ("报告日期", report.report_date),
+            ("报告口径", getattr(report, 'report_mode', '人工复核口径')),
             ("抽样总数", str(report.total_sampled)),
             ("已复核数量", str(report.total_reviewed)),
+            ("未复核数量", str(report.total_sampled - report.total_reviewed)),
             ("整体平均分", f"{report.avg_score} 分"),
             ("参与评分配人数", str(len(report.agent_scores))),
             ("合格率(≥80分)",

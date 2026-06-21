@@ -104,4 +104,6 @@ class QualityReport:
     problem_counts: Dict[str, int] = field(default_factory=dict)
     training_list: List[str] = field(default_factory=list)
     excellent_cases: List[str] = field(default_factory=list)
-    rectification_items: List[Dict] = field(default_factory=list)
+    rectification_items: List[Dict] = field(default_factory=dict)
+    report_mode: str = "人工复核口径"
+    final_score_map: Dict[str, float] = field(default_factory=dict)

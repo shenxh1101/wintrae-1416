@@ -3,33 +3,49 @@ from typing import List, Tuple
 from datetime import timedelta
 
 from models import Conversation, Message, RuleViolation, RuleType
+from services.config_manager import ConfigManager
 
 
 class RuleEngine:
     def __init__(self, config: dict = None):
-        self.config = config or {}
-        self.reply_timeout = self.config.get('reply_timeout', 180)
-        self.forbidden_words = self.config.get('forbidden_words', [
-            '不知道', '不清楚', '不是我的问题', '关我什么事',
-            '你自己看', '随便你', '不可能', '绝对不行',
-            '我们不负责', '你投诉吧', '随便投诉',
-            '神经病', '脑子有病', '滚', '傻逼', '白痴', '笨蛋',
-        ])
-        self.greeting_patterns = self.config.get('greeting_patterns', [
-            r'亲[，,\s]', r'您好', r'你好', r'亲亲', r'亲~',
-            r'亲爱的', r'尊敬的客户', r'尊敬的顾客',
-        ])
-        self.vague_phrases = self.config.get('vague_phrases', [
-            '大概', '可能', '差不多', '应该', '也许', '尽量',
-            '尽快', '稍后', '过会儿', '有时间', '有空',
-            '说不定', '估计', '预计', '不确定',
-        ])
-        self.solution_keywords = self.config.get('solution_keywords', [
-            '可以', '帮您', '为您', '建议', '推荐',
-            '申请', '处理', '解决', '安排', '补偿',
-            '退款', '退货', '换货', '补发', '赠送',
-            '优惠', '折扣', '减免',
-        ])
+        if config:
+            self.reply_timeout = config.get('reply_timeout', 180)
+            self.forbidden_words = config.get('forbidden_words', [
+                '不知道', '不清楚', '不是我的问题', '关我什么事',
+                '你自己看', '随便你', '不可能', '绝对不行',
+                '我们不负责', '你投诉吧', '随便投诉',
+                '神经病', '脑子有病', '滚', '傻逼', '白痴', '笨蛋',
+            ])
+            self.greeting_patterns = config.get('greeting_patterns', [
+                r'亲[，,\s]', r'您好', r'你好', r'亲亲', r'亲~',
+                r'亲爱的', r'尊敬的客户', r'尊敬的顾客',
+            ])
+            self.vague_phrases = config.get('vague_phrases', [
+                '大概', '可能', '差不多', '应该', '也许', '尽量',
+                '尽快', '稍后', '过会儿', '有时间', '有空',
+                '说不定', '估计', '预计', '不确定',
+            ])
+            self.solution_keywords = config.get('solution_keywords', [
+                '可以', '帮您', '为您', '建议', '推荐',
+                '申请', '处理', '解决', '安排', '补偿',
+                '退款', '退货', '换货', '补发', '赠送',
+                '优惠', '折扣', '减免',
+            ])
+        else:
+            cfg = ConfigManager().get_config()
+            self.reply_timeout = cfg.reply_timeout
+            self.forbidden_words = list(cfg.forbidden_words)
+            self.greeting_patterns = list(cfg.greeting_patterns)
+            self.vague_phrases = list(cfg.vague_phrases)
+            self.solution_keywords = list(cfg.solution_keywords)
+
+    def reload_config(self):
+        cfg = ConfigManager().get_config()
+        self.reply_timeout = cfg.reply_timeout
+        self.forbidden_words = list(cfg.forbidden_words)
+        self.greeting_patterns = list(cfg.greeting_patterns)
+        self.vague_phrases = list(cfg.vague_phrases)
+        self.solution_keywords = list(cfg.solution_keywords)
 
     def check_all(self, conversation: Conversation) -> List[RuleViolation]:
         violations = []

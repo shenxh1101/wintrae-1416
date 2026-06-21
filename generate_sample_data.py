@@ -137,6 +137,8 @@ def generate_sample_data(output_dir: str):
                 if qtype == "timeout" and midx == 4 and midx - 1 >= 0:
                     time_offset += 6
 
+                sender_type_raw = "客户" if is_customer else "客服"
+
                 conv_data.append({
                     "会话ID": f"CONV{conv_id:05d}",
                     "客服ID": agent["客服ID"],
@@ -148,7 +150,7 @@ def generate_sample_data(output_dir: str):
                     "客户昵称": customer,
                     "消息时间": msg_time.strftime("%Y-%m-%d %H:%M:%S"),
                     "发送者": sender,
-                    "角色": sender_type,
+                    "角色": sender_type_raw,
                     "消息内容": msg_text
                 })
                 time_offset += random.randint(1, 4)

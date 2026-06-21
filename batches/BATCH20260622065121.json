@@ -1,0 +1,12 @@
+{
+  "batch_id": "BATCH20260622065121",
+  "batch_name": "测试批次_集成测试",
+  "created_time": "2026-06-22 06:51:21",
+  "updated_time": "2026-06-22 06:51:21",
+  "sampled_conv_ids": [],
+  "review_results": {},
+  "agents_data": [],
+  "conversations_data": [],
+  "sampling_params": {},
+  "note": "这是一个自动测试批次"
+}

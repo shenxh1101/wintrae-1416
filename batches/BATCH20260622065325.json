@@ -1,0 +1,2464 @@
+{
+  "batch_id": "BATCH20260622065325",
+  "batch_name": "测试批次_集成测试",
+  "created_time": "2026-06-22 06:53:25",
+  "updated_time": "2026-06-22 06:53:25",
+  "sampled_conv_ids": [
+    "CONV00002",
+    "CONV00001",
+    "CONV00014",
+    "CONV00011",
+    "CONV00016",
+    "CONV00019",
+    "CONV00022",
+    "CONV00025",
+    "CONV00028",
+    "CONV00030",
+    "CONV00036",
+    "CONV00032",
+    "CONV00041",
+    "CONV00040",
+    "CONV00044",
+    "CONV00049",
+    "CONV00050",
+    "CONV00051",
+    "CONV00058",
+    "CONV00061",
+    "CONV00067",
+    "CONV00063",
+    "CONV00073",
+    "CONV00075",
+    "CONV00081",
+    "CONV00078",
+    "CONV00085",
+    "CONV00084",
+    "CONV00088",
+    "CONV00086"
+  ],
+  "review_results": {
+    "CONV00002": {
+      "conv_id": "CONV00002",
+      "score": 75,
+      "manual_score": 70,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": "2026-06-22 06:53:25"
+    },
+    "CONV00001": {
+      "conv_id": "CONV00001",
+      "score": 68,
+      "manual_score": 70,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": "2026-06-22 06:53:25"
+    },
+    "CONV00014": {
+      "conv_id": "CONV00014",
+      "score": 90.0,
+      "manual_score": 85.0,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 6,
+          "evidence": "客户消息: 好的，我拍了\n客服回复: 感谢您的支持~祝您购物愉快！有问题随时联系我们哦！"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": "2026-06-22 06:53:25"
+    },
+    "CONV00011": {
+      "conv_id": "CONV00011",
+      "score": 100.0,
+      "manual_score": 70,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": "2026-06-22 06:53:25"
+    },
+    "CONV00016": {
+      "conv_id": "CONV00016",
+      "score": 75,
+      "manual_score": 70,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": "2026-06-22 06:53:25"
+    },
+    "CONV00019": {
+      "conv_id": "CONV00019",
+      "score": 68,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 4,
+          "evidence": "客户消息: 就是这个价，随便你买不买\n客服回复: 我要投诉！"
+        },
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00022": {
+      "conv_id": "CONV00022",
+      "score": 95.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 1 次超时回复（阈值: 180秒）",
+          "severity": 5,
+          "related_message_index": 2,
+          "evidence": "客户消息: 您好，什么问题呢？\n客服回复: 发错颜色了，而且还有质量问题有破洞"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00025": {
+      "conv_id": "CONV00025",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00028": {
+      "conv_id": "CONV00028",
+      "score": 100.0,
+      "manual_score": null,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00030": {
+      "conv_id": "CONV00030",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 我的快递什么时候到啊都三天了"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00036": {
+      "conv_id": "CONV00036",
+      "score": 100.0,
+      "manual_score": null,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00032": {
+      "conv_id": "CONV00032",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 3,
+          "evidence": "客户消息: 我想问问尺码问题的衣服合适吗胖人穿会不会\n客服回复: 稍等我帮您推荐一下，XL比较适合呢"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00041": {
+      "conv_id": "CONV00041",
+      "score": 85.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 1 次超时回复（阈值: 180秒）",
+          "severity": 5,
+          "related_message_index": 2,
+          "evidence": "客户消息: 不知道，你自己看吧\n客服回复: 你们这服务态度？"
+        },
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00040": {
+      "conv_id": "CONV00040",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 6,
+          "evidence": "客户消息: 好的，我拍了\n客服回复: 感谢您的支持~祝您购物愉快！有问题随时联系我们哦！"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00044": {
+      "conv_id": "CONV00044",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 3,
+          "evidence": "客户消息: 我想问问尺码问题的衣服合适吗胖人穿会不会\n客服回复: 稍等我帮您推荐一下，XL比较适合呢"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00049": {
+      "conv_id": "CONV00049",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00050": {
+      "conv_id": "CONV00050",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00051": {
+      "conv_id": "CONV00051",
+      "score": 100.0,
+      "manual_score": null,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00058": {
+      "conv_id": "CONV00058",
+      "score": 85.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 1 次超时回复（阈值: 180秒）",
+          "severity": 5,
+          "related_message_index": 4,
+          "evidence": "客户消息: 就是这个价，随便你买不买\n客服回复: 我要投诉！"
+        },
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 这个东西怎么这么贵？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00061": {
+      "conv_id": "CONV00061",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 3,
+          "evidence": "客户消息: 我想问问尺码问题的衣服合适吗胖人穿会不会\n客服回复: 稍等我帮您推荐一下，XL比较适合呢"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00067": {
+      "conv_id": "CONV00067",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 6,
+          "evidence": "客户消息: 好的，我拍了\n客服回复: 感谢您的支持~祝您购物愉快！有问题随时联系我们哦！"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00063": {
+      "conv_id": "CONV00063",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 我的快递什么时候到啊都三天了"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00073": {
+      "conv_id": "CONV00073",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 4,
+          "evidence": "客户消息: 这样啊，我知道了\n客服回复: 那你们怎么处理呀怎么办呢？"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00075": {
+      "conv_id": "CONV00075",
+      "score": 100.0,
+      "manual_score": null,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00081": {
+      "conv_id": "CONV00081",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "NO_GREETING",
+          "rule_type_value": "未称呼客户",
+          "description": "前3条客服消息中未检测到礼貌称呼（如：亲、您好、亲爱的等）",
+          "severity": 10,
+          "related_message_index": 0,
+          "evidence": "客服首条消息: 我的快递什么时候到啊都三天了"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00078": {
+      "conv_id": "CONV00078",
+      "score": 95.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 1 次超时回复（阈值: 180秒）",
+          "severity": 5,
+          "related_message_index": 2,
+          "evidence": "客户消息: 您好，这款商品质量怎么样？\n客服回复: 亲，这款采用优质面料，舒适透气哦~"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00085": {
+      "conv_id": "CONV00085",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 3,
+          "evidence": "客户消息: 我想问问尺码问题的衣服合适吗胖人穿会不会\n客服回复: 稍等我帮您推荐一下，XL比较适合呢"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00084": {
+      "conv_id": "CONV00084",
+      "score": 100.0,
+      "manual_score": null,
+      "violations": [],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00088": {
+      "conv_id": "CONV00088",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 3,
+          "evidence": "客户消息: 我想问问尺码问题的衣服合适吗胖人穿会不会\n客服回复: 稍等我帮您推荐一下，XL比较适合呢"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    },
+    "CONV00086": {
+      "conv_id": "CONV00086",
+      "score": 90.0,
+      "manual_score": null,
+      "violations": [
+        {
+          "rule_type": "TIMEOUT_REPLY",
+          "rule_type_value": "超时回复",
+          "description": "检测到 2 次超时回复（阈值: 180秒）",
+          "severity": 10,
+          "related_message_index": 3,
+          "evidence": "客户消息: 我想问问尺码问题的衣服合适吗胖人穿会不会\n客服回复: 稍等我帮您推荐一下，XL比较适合呢"
+        }
+      ],
+      "labels": [],
+      "is_excellent": false,
+      "key_snippets": [],
+      "reviewer_notes": "",
+      "reviewed_by": "",
+      "review_time": null
+    }
+  },
+  "agents_data": [
+    {
+      "agent_id": "K1001",
+      "name": "罗强",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1002",
+      "name": "杨洋",
+      "shop": "专营店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1003",
+      "name": "吴建国",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1004",
+      "name": "林玉梅",
+      "shop": "专卖店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1005",
+      "name": "孙强",
+      "shop": "旗舰店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1006",
+      "name": "郭磊",
+      "shop": "旗舰店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1007",
+      "name": "朱超",
+      "shop": "专营店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1008",
+      "name": "何秀兰",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1009",
+      "name": "胡建国",
+      "shop": "专卖店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1010",
+      "name": "马桂英",
+      "shop": "专卖店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1011",
+      "name": "林磊",
+      "shop": "专营店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1012",
+      "name": "马艳",
+      "shop": "专营店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1013",
+      "name": "罗桂英",
+      "shop": "专卖店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1014",
+      "name": "吴建国",
+      "shop": "旗舰店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    },
+    {
+      "agent_id": "K1015",
+      "name": "杨磊",
+      "shop": "专营店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "group": "",
+      "join_date": null,
+      "is_active": true
+    }
+  ],
+  "conversations_data": [
+    {
+      "conv_id": "CONV00002",
+      "agent_id": "K1001",
+      "agent_name": "罗强",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD942207",
+      "customer_nick": "阳光宝贝",
+      "start_time": "2026-06-22 16:07:00",
+      "end_time": "2026-06-22 16:14:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 16:07:00",
+          "sender": "罗强",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:08:00",
+          "sender": "阳光宝贝",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:09:00",
+          "sender": "罗强",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:10:00",
+          "sender": "阳光宝贝",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:13:00",
+          "sender": "罗强",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:14:00",
+          "sender": "阳光宝贝",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00001",
+      "agent_id": "K1001",
+      "agent_name": "罗强",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD773774",
+      "customer_nick": "向日葵",
+      "start_time": "2026-06-22 13:23:00",
+      "end_time": "2026-06-22 13:33:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 13:23:00",
+          "sender": "罗强",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:24:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:27:00",
+          "sender": "罗强",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:28:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:31:00",
+          "sender": "罗强",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:33:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00014",
+      "agent_id": "K1002",
+      "agent_name": "杨洋",
+      "shop": "专营店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD209680",
+      "customer_nick": "小确幸",
+      "start_time": "2026-06-22 14:46:00",
+      "end_time": "2026-06-22 15:06:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 14:46:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "亲，欢迎光临~请问有什么可以帮您的？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:48:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "您好，这款商品质量怎么样？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:52:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "亲，这款采用优质面料，舒适透气哦~",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:56:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "那有优惠吗？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:58:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "亲，现在下单可以享受满减优惠，满199减20，还赠送运费险呢😊",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 15:02:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "好的，我拍了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 15:06:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "感谢您的支持~祝您购物愉快！有问题随时联系我们哦！",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00011",
+      "agent_id": "K1002",
+      "agent_name": "杨洋",
+      "shop": "专营店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "PENDING_SHIPMENT",
+      "order_status_value": "待发货",
+      "order_id": "DD575722",
+      "customer_nick": "雨后彩虹",
+      "start_time": "2026-06-22 16:05:00",
+      "end_time": "2026-06-22 16:22:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 16:05:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "亲，欢迎光临~请问有什么可以帮您的？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:08:00",
+          "sender": "雨后彩虹",
+          "sender_type": "客户",
+          "content": "您好，这款商品质量怎么样？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:10:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "亲，这款采用优质面料，舒适透气哦~",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:13:00",
+          "sender": "雨后彩虹",
+          "sender_type": "客户",
+          "content": "那有优惠吗？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:16:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "亲，现在下单可以享受满减优惠，满199减20，还赠送运费险呢😊",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:20:00",
+          "sender": "雨后彩虹",
+          "sender_type": "客户",
+          "content": "好的，我拍了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:22:00",
+          "sender": "杨洋",
+          "sender_type": "客服",
+          "content": "感谢您的支持~祝您购物愉快！有问题随时联系我们哦！",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00016",
+      "agent_id": "K1003",
+      "agent_name": "吴建国",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD277500",
+      "customer_nick": "小确幸",
+      "start_time": "2026-06-22 17:12:00",
+      "end_time": "2026-06-22 17:23:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 17:12:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:15:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:16:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:20:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:21:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:23:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00019",
+      "agent_id": "K1003",
+      "agent_name": "吴建国",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD717968",
+      "customer_nick": "追光者",
+      "start_time": "2026-06-22 11:30:00",
+      "end_time": "2026-06-22 11:49:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 11:30:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:33:00",
+          "sender": "追光者",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:37:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:41:00",
+          "sender": "追光者",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:45:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:49:00",
+          "sender": "追光者",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00022",
+      "agent_id": "K1004",
+      "agent_name": "林玉梅",
+      "shop": "专卖店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD984495",
+      "customer_nick": "快乐小明",
+      "start_time": "2026-06-22 14:02:00",
+      "end_time": "2026-06-22 14:18:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 14:02:00",
+          "sender": "林玉梅",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:05:00",
+          "sender": "快乐小明",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:09:00",
+          "sender": "林玉梅",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:13:00",
+          "sender": "快乐小明",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:15:00",
+          "sender": "林玉梅",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:18:00",
+          "sender": "快乐小明",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00025",
+      "agent_id": "K1004",
+      "agent_name": "林玉梅",
+      "shop": "专卖店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD509560",
+      "customer_nick": "向日葵",
+      "start_time": "2026-06-22 13:09:00",
+      "end_time": "2026-06-22 13:21:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 13:09:00",
+          "sender": "林玉梅",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:10:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:13:00",
+          "sender": "林玉梅",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:16:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:17:00",
+          "sender": "林玉梅",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:21:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00028",
+      "agent_id": "K1005",
+      "agent_name": "孙强",
+      "shop": "旗舰店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD150626",
+      "customer_nick": "春暖花开",
+      "start_time": "2026-06-22 17:31:00",
+      "end_time": "2026-06-22 17:44:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 17:31:00",
+          "sender": "孙强",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:35:00",
+          "sender": "春暖花开",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:36:00",
+          "sender": "孙强",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:39:00",
+          "sender": "春暖花开",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:41:00",
+          "sender": "孙强",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:44:00",
+          "sender": "春暖花开",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00030",
+      "agent_id": "K1005",
+      "agent_name": "孙强",
+      "shop": "旗舰店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "PENDING_SHIPMENT",
+      "order_status_value": "待发货",
+      "order_id": "DD351080",
+      "customer_nick": "阳光宝贝",
+      "start_time": "2026-06-22 17:37:00",
+      "end_time": "2026-06-22 17:45:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 17:37:00",
+          "sender": "孙强",
+          "sender_type": "客服",
+          "content": "我的快递什么时候到啊都三天了",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:40:00",
+          "sender": "阳光宝贝",
+          "sender_type": "客户",
+          "content": "大概可能差不多就这几天吧尽快给你发",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:42:00",
+          "sender": "孙强",
+          "sender_type": "客服",
+          "content": "能给个准确时间吗",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:45:00",
+          "sender": "阳光宝贝",
+          "sender_type": "客户",
+          "content": "不清楚，你再等等吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00036",
+      "agent_id": "K1006",
+      "agent_name": "郭磊",
+      "shop": "旗舰店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD212718",
+      "customer_nick": "稻草人",
+      "start_time": "2026-06-22 17:43:00",
+      "end_time": "2026-06-22 17:57:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 17:43:00",
+          "sender": "郭磊",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:45:00",
+          "sender": "稻草人",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:46:00",
+          "sender": "郭磊",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:50:00",
+          "sender": "稻草人",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:53:00",
+          "sender": "郭磊",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:57:00",
+          "sender": "稻草人",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00032",
+      "agent_id": "K1006",
+      "agent_name": "郭磊",
+      "shop": "旗舰店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD643427",
+      "customer_nick": "稻草人",
+      "start_time": "2026-06-22 11:41:00",
+      "end_time": "2026-06-22 12:14:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 11:41:00",
+          "sender": "稻草人",
+          "sender_type": "客户",
+          "content": "亲，在吗，我问个问题",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:58:00",
+          "sender": "郭磊",
+          "sender_type": "客服",
+          "content": "您好在的，请问什么问题？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:08:00",
+          "sender": "稻草人",
+          "sender_type": "客户",
+          "content": "我想问问尺码问题的衣服合适吗胖人穿会不会",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 12:14:00",
+          "sender": "郭磊",
+          "sender_type": "客服",
+          "content": "稍等我帮您推荐一下，XL比较适合呢",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00041",
+      "agent_id": "K1007",
+      "agent_name": "朱超",
+      "shop": "专营店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD175888",
+      "customer_nick": "天空之城",
+      "start_time": "2026-06-22 10:39:00",
+      "end_time": "2026-06-22 10:51:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 10:39:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 10:42:00",
+          "sender": "天空之城",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 10:46:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 10:47:00",
+          "sender": "天空之城",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 10:50:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 10:51:00",
+          "sender": "天空之城",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00040",
+      "agent_id": "K1007",
+      "agent_name": "朱超",
+      "shop": "专营店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD769381",
+      "customer_nick": "蒲公英",
+      "start_time": "2026-06-22 12:36:00",
+      "end_time": "2026-06-22 12:56:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 12:36:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "亲，欢迎光临~请问有什么可以帮您的？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:39:00",
+          "sender": "蒲公英",
+          "sender_type": "客户",
+          "content": "您好，这款商品质量怎么样？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 12:42:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "亲，这款采用优质面料，舒适透气哦~",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:45:00",
+          "sender": "蒲公英",
+          "sender_type": "客户",
+          "content": "那有优惠吗？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 12:49:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "亲，现在下单可以享受满减优惠，满199减20，还赠送运费险呢😊",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:52:00",
+          "sender": "蒲公英",
+          "sender_type": "客户",
+          "content": "好的，我拍了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 12:56:00",
+          "sender": "朱超",
+          "sender_type": "客服",
+          "content": "感谢您的支持~祝您购物愉快！有问题随时联系我们哦！",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00044",
+      "agent_id": "K1008",
+      "agent_name": "何秀兰",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD230437",
+      "customer_nick": "春暖花开",
+      "start_time": "2026-06-22 09:52:00",
+      "end_time": "2026-06-22 10:24:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 09:52:00",
+          "sender": "春暖花开",
+          "sender_type": "客户",
+          "content": "亲，在吗，我问个问题",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 10:11:00",
+          "sender": "何秀兰",
+          "sender_type": "客服",
+          "content": "您好在的，请问什么问题？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 10:18:00",
+          "sender": "春暖花开",
+          "sender_type": "客户",
+          "content": "我想问问尺码问题的衣服合适吗胖人穿会不会",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 10:24:00",
+          "sender": "何秀兰",
+          "sender_type": "客服",
+          "content": "稍等我帮您推荐一下，XL比较适合呢",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00049",
+      "agent_id": "K1008",
+      "agent_name": "何秀兰",
+      "shop": "专卖店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD314534",
+      "customer_nick": "小确幸",
+      "start_time": "2026-06-22 17:55:00",
+      "end_time": "2026-06-22 18:08:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 17:55:00",
+          "sender": "何秀兰",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:58:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:59:00",
+          "sender": "何秀兰",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 18:01:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 18:04:00",
+          "sender": "何秀兰",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 18:08:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00050",
+      "agent_id": "K1009",
+      "agent_name": "胡建国",
+      "shop": "专卖店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD636247",
+      "customer_nick": "小太阳",
+      "start_time": "2026-06-22 12:40:00",
+      "end_time": "2026-06-22 12:54:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 12:40:00",
+          "sender": "胡建国",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:43:00",
+          "sender": "小太阳",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 12:46:00",
+          "sender": "胡建国",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:50:00",
+          "sender": "小太阳",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 12:52:00",
+          "sender": "胡建国",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 12:54:00",
+          "sender": "小太阳",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00051",
+      "agent_id": "K1009",
+      "agent_name": "胡建国",
+      "shop": "专卖店",
+      "shift": "AFTERNOON",
+      "shift_value": "中班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD126107",
+      "customer_nick": "星河漫步",
+      "start_time": "2026-06-22 17:47:00",
+      "end_time": "2026-06-22 17:56:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 17:47:00",
+          "sender": "胡建国",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:50:00",
+          "sender": "星河漫步",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:51:00",
+          "sender": "胡建国",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:53:00",
+          "sender": "星河漫步",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 17:55:00",
+          "sender": "胡建国",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 17:56:00",
+          "sender": "星河漫步",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00058",
+      "agent_id": "K1010",
+      "agent_name": "马桂英",
+      "shop": "专卖店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD354720",
+      "customer_nick": "小太阳",
+      "start_time": "2026-06-22 10:54:00",
+      "end_time": "2026-06-22 11:09:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 10:54:00",
+          "sender": "马桂英",
+          "sender_type": "客服",
+          "content": "这个东西怎么这么贵？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 10:56:00",
+          "sender": "小太阳",
+          "sender_type": "客户",
+          "content": "不知道，你自己看吧",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 10:58:00",
+          "sender": "马桂英",
+          "sender_type": "客服",
+          "content": "你们这服务态度？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:01:00",
+          "sender": "小太阳",
+          "sender_type": "客户",
+          "content": "就是这个价，随便你买不买",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:05:00",
+          "sender": "马桂英",
+          "sender_type": "客服",
+          "content": "我要投诉！",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:09:00",
+          "sender": "小太阳",
+          "sender_type": "客户",
+          "content": "随便投诉，我又不是我的问题，关我什么事",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00061",
+      "agent_id": "K1010",
+      "agent_name": "马桂英",
+      "shop": "专卖店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD316403",
+      "customer_nick": "夏日微风",
+      "start_time": "2026-06-22 15:12:00",
+      "end_time": "2026-06-22 15:46:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 15:12:00",
+          "sender": "夏日微风",
+          "sender_type": "客户",
+          "content": "亲，在吗，我问个问题",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 15:29:00",
+          "sender": "马桂英",
+          "sender_type": "客服",
+          "content": "您好在的，请问什么问题？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 15:39:00",
+          "sender": "夏日微风",
+          "sender_type": "客户",
+          "content": "我想问问尺码问题的衣服合适吗胖人穿会不会",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 15:46:00",
+          "sender": "马桂英",
+          "sender_type": "客服",
+          "content": "稍等我帮您推荐一下，XL比较适合呢",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00067",
+      "agent_id": "K1011",
+      "agent_name": "林磊",
+      "shop": "专营店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "SHIPPED",
+      "order_status_value": "已发货",
+      "order_id": "DD173314",
+      "customer_nick": "小确幸",
+      "start_time": "2026-06-22 15:48:00",
+      "end_time": "2026-06-22 16:08:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 15:48:00",
+          "sender": "林磊",
+          "sender_type": "客服",
+          "content": "亲，欢迎光临~请问有什么可以帮您的？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 15:52:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "您好，这款商品质量怎么样？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 15:55:00",
+          "sender": "林磊",
+          "sender_type": "客服",
+          "content": "亲，这款采用优质面料，舒适透气哦~",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 15:57:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "那有优惠吗？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:01:00",
+          "sender": "林磊",
+          "sender_type": "客服",
+          "content": "亲，现在下单可以享受满减优惠，满199减20，还赠送运费险呢😊",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:04:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "好的，我拍了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:08:00",
+          "sender": "林磊",
+          "sender_type": "客服",
+          "content": "感谢您的支持~祝您购物愉快！有问题随时联系我们哦！",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00063",
+      "agent_id": "K1011",
+      "agent_name": "林磊",
+      "shop": "专营店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "PENDING_SHIPMENT",
+      "order_status_value": "待发货",
+      "order_id": "DD501155",
+      "customer_nick": "天空之城",
+      "start_time": "2026-06-22 16:41:00",
+      "end_time": "2026-06-22 16:47:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 16:41:00",
+          "sender": "林磊",
+          "sender_type": "客服",
+          "content": "我的快递什么时候到啊都三天了",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:44:00",
+          "sender": "天空之城",
+          "sender_type": "客户",
+          "content": "大概可能差不多就这几天吧尽快给你发",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 16:45:00",
+          "sender": "林磊",
+          "sender_type": "客服",
+          "content": "能给个准确时间吗",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 16:47:00",
+          "sender": "天空之城",
+          "sender_type": "客户",
+          "content": "不清楚，你再等等吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00073",
+      "agent_id": "K1012",
+      "agent_name": "马艳",
+      "shop": "专营店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD200309",
+      "customer_nick": "追光者",
+      "start_time": "2026-06-22 09:41:00",
+      "end_time": "2026-06-22 09:56:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 09:41:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 09:43:00",
+          "sender": "追光者",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 09:47:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 09:49:00",
+          "sender": "追光者",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 09:53:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 09:56:00",
+          "sender": "追光者",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00075",
+      "agent_id": "K1012",
+      "agent_name": "马艳",
+      "shop": "专营店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD489185",
+      "customer_nick": "琉璃盏",
+      "start_time": "2026-06-22 13:42:00",
+      "end_time": "2026-06-22 13:54:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 13:42:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "亲，欢迎光临~请问有什么可以帮您的？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:43:00",
+          "sender": "琉璃盏",
+          "sender_type": "客户",
+          "content": "您好，这款商品质量怎么样？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:44:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "亲，这款采用优质面料，舒适透气哦~",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:46:00",
+          "sender": "琉璃盏",
+          "sender_type": "客户",
+          "content": "那有优惠吗？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:47:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "亲，现在下单可以享受满减优惠，满199减20，还赠送运费险呢😊",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:51:00",
+          "sender": "琉璃盏",
+          "sender_type": "客户",
+          "content": "好的，我拍了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:54:00",
+          "sender": "马艳",
+          "sender_type": "客服",
+          "content": "感谢您的支持~祝您购物愉快！有问题随时联系我们哦！",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00081",
+      "agent_id": "K1013",
+      "agent_name": "罗桂英",
+      "shop": "专卖店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "PENDING_SHIPMENT",
+      "order_status_value": "待发货",
+      "order_id": "DD913323",
+      "customer_nick": "向日葵",
+      "start_time": "2026-06-22 11:25:00",
+      "end_time": "2026-06-22 11:33:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 11:25:00",
+          "sender": "罗桂英",
+          "sender_type": "客服",
+          "content": "我的快递什么时候到啊都三天了",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:28:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "大概可能差不多就这几天吧尽快给你发",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:30:00",
+          "sender": "罗桂英",
+          "sender_type": "客服",
+          "content": "能给个准确时间吗",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:33:00",
+          "sender": "向日葵",
+          "sender_type": "客户",
+          "content": "不清楚，你再等等吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00078",
+      "agent_id": "K1013",
+      "agent_name": "罗桂英",
+      "shop": "专卖店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "REFUNDED",
+      "order_status_value": "已退款",
+      "order_id": "DD751998",
+      "customer_nick": "琉璃盏",
+      "start_time": "2026-06-22 10:56:00",
+      "end_time": "2026-06-22 11:12:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 10:56:00",
+          "sender": "罗桂英",
+          "sender_type": "客服",
+          "content": "亲，欢迎光临~请问有什么可以帮您的？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 10:59:00",
+          "sender": "琉璃盏",
+          "sender_type": "客户",
+          "content": "您好，这款商品质量怎么样？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:03:00",
+          "sender": "罗桂英",
+          "sender_type": "客服",
+          "content": "亲，这款采用优质面料，舒适透气哦~",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:04:00",
+          "sender": "琉璃盏",
+          "sender_type": "客户",
+          "content": "那有优惠吗？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:06:00",
+          "sender": "罗桂英",
+          "sender_type": "客服",
+          "content": "亲，现在下单可以享受满减优惠，满199减20，还赠送运费险呢😊",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:10:00",
+          "sender": "琉璃盏",
+          "sender_type": "客户",
+          "content": "好的，我拍了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:12:00",
+          "sender": "罗桂英",
+          "sender_type": "客服",
+          "content": "感谢您的支持~祝您购物愉快！有问题随时联系我们哦！",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00085",
+      "agent_id": "K1014",
+      "agent_name": "吴建国",
+      "shop": "旗舰店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD122017",
+      "customer_nick": "星河漫步",
+      "start_time": "2026-06-22 13:57:00",
+      "end_time": "2026-06-22 14:28:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 13:57:00",
+          "sender": "星河漫步",
+          "sender_type": "客户",
+          "content": "亲，在吗，我问个问题",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:13:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "您好在的，请问什么问题？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:21:00",
+          "sender": "星河漫步",
+          "sender_type": "客户",
+          "content": "我想问问尺码问题的衣服合适吗胖人穿会不会",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:28:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "稍等我帮您推荐一下，XL比较适合呢",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00084",
+      "agent_id": "K1014",
+      "agent_name": "吴建国",
+      "shop": "旗舰店",
+      "shift": "NIGHT",
+      "shift_value": "晚班",
+      "order_status": "COMPLETED",
+      "order_status_value": "已完成",
+      "order_id": "DD803144",
+      "customer_nick": "小确幸",
+      "start_time": "2026-06-22 14:52:00",
+      "end_time": "2026-06-22 15:03:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 14:52:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "亲，我的货有问题怎么办？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:53:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "您好，什么问题呢？",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 14:55:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "发错颜色了，而且还有质量问题有破洞",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 14:59:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "这样啊，我知道了",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 15:00:00",
+          "sender": "吴建国",
+          "sender_type": "客服",
+          "content": "那你们怎么处理呀怎么办呢？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 15:03:00",
+          "sender": "小确幸",
+          "sender_type": "客户",
+          "content": "我也不知道，你再想想办法吧",
+          "is_customer": true
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00088",
+      "agent_id": "K1015",
+      "agent_name": "杨磊",
+      "shop": "专营店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD614052",
+      "customer_nick": "快乐小明",
+      "start_time": "2026-06-22 11:09:00",
+      "end_time": "2026-06-22 11:41:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 11:09:00",
+          "sender": "快乐小明",
+          "sender_type": "客户",
+          "content": "亲，在吗，我问个问题",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:26:00",
+          "sender": "杨磊",
+          "sender_type": "客服",
+          "content": "您好在的，请问什么问题？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 11:34:00",
+          "sender": "快乐小明",
+          "sender_type": "客户",
+          "content": "我想问问尺码问题的衣服合适吗胖人穿会不会",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 11:41:00",
+          "sender": "杨磊",
+          "sender_type": "客服",
+          "content": "稍等我帮您推荐一下，XL比较适合呢",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    },
+    {
+      "conv_id": "CONV00086",
+      "agent_id": "K1015",
+      "agent_name": "杨磊",
+      "shop": "专营店",
+      "shift": "MORNING",
+      "shift_value": "早班",
+      "order_status": "REFUNDING",
+      "order_status_value": "退款中",
+      "order_id": "DD435166",
+      "customer_nick": "蒲公英",
+      "start_time": "2026-06-22 13:20:00",
+      "end_time": "2026-06-22 13:56:00",
+      "messages": [
+        {
+          "timestamp": "2026-06-22 13:20:00",
+          "sender": "蒲公英",
+          "sender_type": "客户",
+          "content": "亲，在吗，我问个问题",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:37:00",
+          "sender": "杨磊",
+          "sender_type": "客服",
+          "content": "您好在的，请问什么问题？",
+          "is_customer": false
+        },
+        {
+          "timestamp": "2026-06-22 13:47:00",
+          "sender": "蒲公英",
+          "sender_type": "客户",
+          "content": "我想问问尺码问题的衣服合适吗胖人穿会不会",
+          "is_customer": true
+        },
+        {
+          "timestamp": "2026-06-22 13:56:00",
+          "sender": "杨磊",
+          "sender_type": "客服",
+          "content": "稍等我帮您推荐一下，XL比较适合呢",
+          "is_customer": false
+        }
+      ],
+      "tags": []
+    }
+  ],
+  "sampling_params": {},
+  "note": "这是一个自动测试批次"
+}

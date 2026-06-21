@@ -127,8 +127,14 @@ class ImportService:
                 time_col = candidate
                 break
 
+        role_col = None
+        for candidate in ['角色', '用户类型', '消息类型', 'type', 'role']:
+            if candidate in df.columns:
+                role_col = candidate
+                break
+
         sender_col = None
-        for candidate in ['发送者', '发送人', 'sender', '角色']:
+        for candidate in ['发送者', '发送人', 'sender', '昵称']:
             if candidate in df.columns:
                 sender_col = candidate
                 break
@@ -163,14 +169,38 @@ class ImportService:
                         ts = datetime.now()
                     times.append(ts)
 
-                    sender_type = str(msg_row.get(sender_col, '客服')).strip() if sender_col else '客服'
-                    is_customer = any(k in sender_type for k in ['客户', '顾客', '买家', 'customer', 'user'])
+                    sender_type_raw = str(msg_row.get(role_col, '')).strip() if role_col else ''
+                    sender_name = str(msg_row.get(sender_col, '')).strip() if sender_col else ''
 
-                    sender = str(msg_row.get(sender_col, agent_name)).strip() if sender_col else agent_name
+                    is_customer = False
+                    sender_type = '客服'
+
+                    if role_col:
+                        customer_keywords = ['客户', '顾客', '买家', 'consumer', 'customer', 'user', '会员', '消费者', 'C端']
+                        if any(k.lower() in sender_type_raw.lower() for k in customer_keywords):
+                            is_customer = True
+                            sender_type = '客户'
+                        else:
+                            sender_type = '客服'
+                    else:
+                        if sender_col:
+                            if sender_name and any(k in sender_name for k in ['客户', '顾客', '买家', 'visitor', 'guest']):
+                                is_customer = True
+                                sender_type = '客户'
+                            elif agent_name and sender_name == agent_name:
+                                is_customer = False
+                                sender_type = '客服'
+                            else:
+                                customer_keywords = ['客户', '顾客', '买家', 'consumer', 'customer', 'user', '会员', '消费者']
+                                if any(k.lower() in sender_name.lower() for k in customer_keywords):
+                                    is_customer = True
+                                    sender_type = '客户'
+
+                    final_sender = sender_name if sender_name else (agent_name if not is_customer else '客户')
 
                     messages.append(Message(
                         timestamp=ts,
-                        sender=sender,
+                        sender=final_sender,
                         sender_type=sender_type,
                         content=content,
                         is_customer=is_customer

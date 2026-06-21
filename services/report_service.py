@@ -6,47 +6,60 @@ import os
 import pandas as pd
 
 from models import Conversation, ReviewResult, QualityReport, Agent, RuleType
+from services.config_manager import ConfigManager
 
 
 class ReportService:
-    SCORE_THRESHOLD_PASS = 80.0
-    SCORE_THRESHOLD_ATTENTION = 70.0
-    MIN_SAMPLES_FOR_TRAINING = 2
-    PASS_RATE_FOR_TRAINING = 0.6
+    def __init__(self):
+        self._reload_config()
+
+    def _reload_config(self):
+        cfg = ConfigManager().get_config()
+        self.SCORE_THRESHOLD_PASS = cfg.score_threshold_pass
+        self.SCORE_THRESHOLD_ATTENTION = cfg.score_threshold_attention
+        self.MIN_SAMPLES_FOR_TRAINING = cfg.min_samples_for_training
+        self.PASS_RATE_FOR_TRAINING = cfg.pass_rate_for_training
 
     def generate_report(
         self,
         sampled_conversations: List[Conversation],
         reviews: Dict[str, ReviewResult],
         agents: List[Agent],
-        report_date: Optional[str] = None
+        report_date: Optional[str] = None,
+        prefer_manual_score: bool = True
     ) -> QualityReport:
+        self._reload_config()
+
         if report_date is None:
             report_date = datetime.now().strftime("%Y-%m-%d")
 
         report = QualityReport(report_date=report_date)
         report.total_sampled = len(sampled_conversations)
 
-        reviewed_convs = []
-        review_list = []
         conv_map = {c.conv_id: c for c in sampled_conversations}
+        all_reviews = []
+        for conv in sampled_conversations:
+            review = reviews.get(conv.conv_id)
+            if review:
+                all_reviews.append((conv, review))
 
-        for conv_id, review in reviews.items():
-            if conv_id in conv_map and review.manual_score is not None:
-                reviewed_convs.append(conv_map[conv_id])
-                review_list.append((conv_map[conv_id], review))
+        manually_reviewed = [(c, r) for c, r in all_reviews if r.manual_score is not None]
+        report.total_reviewed = len(manually_reviewed)
 
-        report.total_reviewed = len(review_list)
+        def get_final_score(review: ReviewResult) -> float:
+            if prefer_manual_score and review.manual_score is not None:
+                return review.manual_score
+            return review.score
 
-        if review_list:
-            scores = [r.manual_score for _, r in review_list]
+        if all_reviews:
+            scores = [get_final_score(r) for _, r in all_reviews]
             report.avg_score = round(sum(scores) / len(scores), 1)
 
         agent_scores = defaultdict(list)
         agent_pass_count = defaultdict(lambda: [0, 0])
-        for conv, review in review_list:
+        for conv, review in all_reviews:
             agent_key = f"{conv.agent_name}({conv.agent_id})"
-            final_score = review.manual_score if review.manual_score is not None else review.score
+            final_score = get_final_score(review)
             agent_scores[agent_key].append(final_score)
             agent_pass_count[agent_key][1] += 1
             if final_score >= self.SCORE_THRESHOLD_PASS:
@@ -58,7 +71,7 @@ class ReportService:
         }
 
         problem_counts = defaultdict(int)
-        for _, review in review_list:
+        for _, review in all_reviews:
             for v in review.violations:
                 problem_counts[v.rule_type.value] += 1
             for label in review.labels:
@@ -69,8 +82,14 @@ class ReportService:
             agent_scores, agent_pass_count
         )
 
-        report.excellent_cases = self._identify_excellent_cases(review_list)
-        report.rectification_items = self._generate_rectification_items(review_list)
+        report.excellent_cases = self._identify_excellent_cases(all_reviews, get_final_score)
+        report.rectification_items = self._generate_rectification_items(all_reviews, get_final_score)
+
+        report.report_mode = "人工复核口径" if prefer_manual_score else "自动规则口径"
+        report.final_score_map = {
+            c.conv_id: get_final_score(reviews.get(c.conv_id, ReviewResult(conv_id=c.conv_id)))
+            for c in sampled_conversations
+        }
 
         return report
 
@@ -91,22 +110,24 @@ class ReportService:
 
     def _identify_excellent_cases(
         self,
-        review_list: List
+        review_list: List,
+        score_getter
     ) -> List[str]:
         cases = []
         for conv, review in review_list:
             if review.is_excellent:
-                score = review.manual_score if review.manual_score is not None else review.score
+                score = score_getter(review)
                 cases.append(f"{conv.agent_name}-会话{conv.conv_id}(得分:{score})")
         return cases
 
     def _generate_rectification_items(
         self,
-        review_list: List
+        review_list: List,
+        score_getter
     ) -> List[Dict]:
         items = []
         for conv, review in review_list:
-            score = review.manual_score if review.manual_score is not None else review.score
+            score = score_getter(review)
             if score < self.SCORE_THRESHOLD_PASS:
                 issues = [v.description for v in review.violations]
                 items.append({
@@ -115,12 +136,12 @@ class ReportService:
                     '会话ID': conv.conv_id,
                     '得分': score,
                     '主要问题': '; '.join(issues) if issues else '综合评分低于合格线',
-                    '整改建议': self._get_rectification_suggestion(review),
+                    '整改建议': self._get_rectification_suggestion(review, score),
                     '复核备注': review.reviewer_notes
                 })
         return sorted(items, key=lambda x: x['得分'])
 
-    def _get_rectification_suggestion(self, review: ReviewResult) -> str:
+    def _get_rectification_suggestion(self, review: ReviewResult, final_score: float = None) -> str:
         suggestions = []
         rule_suggestions = {
             RuleType.TIMEOUT_REPLY.value: "加强响应速度培训，设置消息提醒机制",
@@ -133,8 +154,11 @@ class ReportService:
             if v.rule_type.value in rule_suggestions:
                 suggestions.append(rule_suggestions[v.rule_type.value])
 
-        if not suggestions and review.manual_score is not None and review.manual_score < 80:
-            suggestions.append("进行全面服务规范再培训，重点提升综合服务能力")
+        if not suggestions:
+            if review.manual_score is not None and review.manual_score < 80:
+                suggestions.append("进行全面服务规范再培训，重点提升综合服务能力")
+            elif final_score is not None and final_score < 80:
+                suggestions.append("进行全面服务规范再培训，重点提升综合服务能力")
 
         return '；'.join(suggestions) if suggestions else "持续跟进观察"
 
