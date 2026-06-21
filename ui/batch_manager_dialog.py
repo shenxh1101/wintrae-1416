@@ -17,9 +17,13 @@ class BatchManagerDialog(QDialog):
     def __init__(self, parent=None, current_data=None):
         super().__init__(parent)
         self.setWindowTitle("质检批次管理")
-        self.setMinimumSize(900, 500)
+        self.setMinimumSize(900, 550)
         self.batch_manager = BatchManager()
         self.current_data = current_data
+        self.current_batch_id = current_data.get('current_batch_id') if current_data else None
+        self.current_loaded_batch = None
+        if self.current_batch_id:
+            self.current_loaded_batch = self.batch_manager.load_batch(self.current_batch_id)
         self._init_ui()
         self._refresh_batch_list()
 
@@ -39,15 +43,52 @@ class BatchManagerDialog(QDialog):
 
         save_bar = QFrame()
         save_bar.setFrameShape(QFrame.StyledPanel)
-        save_layout = QHBoxLayout(save_bar)
-        save_layout.addWidget(QLabel("批次名称:"))
+        save_layout = QVBoxLayout(save_bar)
+        save_layout.setContentsMargins(8, 8, 8, 8)
+        save_layout.setSpacing(6)
+
+        if self.current_loaded_batch:
+            info_bar = QHBoxLayout()
+            info_bar.addWidget(QLabel(f"📌 当前批次: "))
+            name_label = QLabel(f"<b>{self.current_loaded_batch.batch_name}</b>")
+            name_label.setStyleSheet("color: #1976D2;")
+            info_bar.addWidget(name_label)
+            info_bar.addWidget(QLabel(f"  (ID: {self.current_batch_id})"))
+            progress = self.current_loaded_batch.get_review_progress()
+            info_bar.addWidget(QLabel(f"  进度: {progress['reviewed']}/{progress['total']}"))
+            info_bar.addStretch()
+            save_layout.addLayout(info_bar)
+
+        name_row = QHBoxLayout()
+        name_row.addWidget(QLabel("批次名称:"))
         self.edit_batch_name = QLineEdit()
         self.edit_batch_name.setPlaceholderText("例如：2026-06-22 早班质检")
-        save_layout.addWidget(self.edit_batch_name, 1)
-        self.btn_save_batch = QPushButton("💾 保存当前批次")
-        self.btn_save_batch.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
-        self.btn_save_batch.clicked.connect(self._on_save_current_batch)
-        save_layout.addWidget(self.btn_save_batch)
+        if self.current_loaded_batch:
+            self.edit_batch_name.setText(self.current_loaded_batch.batch_name)
+        name_row.addWidget(self.edit_batch_name, 1)
+        save_layout.addLayout(name_row)
+
+        btn_row = QHBoxLayout()
+        if self.current_loaded_batch:
+            self.btn_update_batch = QPushButton("💾 更新当前批次")
+            self.btn_update_batch.setStyleSheet("background-color: #2196F3; color: white; font-weight: bold;")
+            self.btn_update_batch.setToolTip("保存复核进度到当前批次，不创建新批次")
+            self.btn_update_batch.clicked.connect(self._on_update_current_batch)
+            btn_row.addWidget(self.btn_update_batch)
+
+            self.btn_save_as = QPushButton("📋 另存为新批次")
+            self.btn_save_as.setStyleSheet("background-color: #9E9E9E; color: white;")
+            self.btn_save_as.setToolTip("将当前数据另存为一个全新的批次")
+            self.btn_save_as.clicked.connect(self._on_save_as_new_batch)
+            btn_row.addWidget(self.btn_save_as)
+        else:
+            self.btn_save_batch = QPushButton("💾 保存为新批次")
+            self.btn_save_batch.setStyleSheet("background-color: #4CAF50; color: white; font-weight: bold;")
+            self.btn_save_batch.clicked.connect(self._on_save_current_batch)
+            btn_row.addWidget(self.btn_save_batch)
+        btn_row.addStretch()
+        save_layout.addLayout(btn_row)
+
         left_layout.addWidget(save_bar)
 
         list_label = QLabel("历史批次（双击加载继续复核）:")
@@ -160,7 +201,11 @@ class BatchManagerDialog(QDialog):
                     item.setData(Qt.UserRole, batch['batch_id'])
 
         if not self.current_data:
-            self.btn_save_batch.setEnabled(False)
+            if self.current_loaded_batch:
+                self.btn_update_batch.setEnabled(False)
+                self.btn_save_as.setEnabled(False)
+            else:
+                self.btn_save_batch.setEnabled(False)
             self.edit_batch_name.setEnabled(False)
             self.edit_batch_name.setPlaceholderText("请先完成抽样操作后再保存批次")
 
@@ -202,6 +247,49 @@ class BatchManagerDialog(QDialog):
                 QMessageBox.critical(self, "保存失败", "批次保存失败，请检查文件权限。")
         except Exception as e:
             QMessageBox.critical(self, "错误", f"保存批次时出错: {str(e)}")
+
+    def _on_update_current_batch(self):
+        if not self.current_loaded_batch or not self.current_data:
+            QMessageBox.warning(self, "提示", "当前没有可更新的批次数据。")
+            return
+
+        batch_name = self.edit_batch_name.text().strip()
+        if not batch_name:
+            batch_name = self.current_loaded_batch.batch_name
+
+        note, ok = QInputDialog.getText(self, "备注",
+            "请输入批次备注（可选）:",
+            QLineEdit.Normal, self.current_loaded_batch.note or "")
+        if not ok:
+            return
+
+        try:
+            self.current_loaded_batch.update_with(
+                sampled_conversations=self.current_data.get('sampled_conversations', []),
+                all_conversations=self.current_data.get('all_conversations', []),
+                agents=self.current_data.get('agents', []),
+                review_results=self.current_data.get('review_results', {}),
+                sampling_params=self.current_data.get('sampling_params', {}),
+                note=note,
+                batch_name=batch_name,
+            )
+            success = self.batch_manager.save_batch(self.current_loaded_batch)
+            if success:
+                self.batch_saved.emit(self.current_loaded_batch)
+                progress = self.current_loaded_batch.get_review_progress()
+                QMessageBox.information(self, "更新成功",
+                    f"批次已成功更新！\n\n批次ID: {self.current_loaded_batch.batch_id}\n"
+                    f"批次名称: {self.current_loaded_batch.batch_name}\n"
+                    f"更新时间: {self.current_loaded_batch.updated_time}\n"
+                    f"当前进度: {progress['reviewed']}/{progress['total']}")
+                self._refresh_batch_list()
+            else:
+                QMessageBox.critical(self, "更新失败", "批次更新失败，请检查文件权限。")
+        except Exception as e:
+            QMessageBox.critical(self, "错误", f"更新批次时出错: {str(e)}")
+
+    def _on_save_as_new_batch(self):
+        self._on_save_current_batch()
 
     def _on_select_batch(self):
         rows = self.batch_table.selectionModel().selectedRows()

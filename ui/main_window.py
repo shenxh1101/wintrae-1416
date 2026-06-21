@@ -410,6 +410,7 @@ class MainWindow(QMainWindow):
             'agents': self.agents,
             'review_results': self.review_results,
             'sampling_params': {},
+            'current_batch_id': self.current_batch_id,
         }
 
     def _on_menu_import_agents(self):

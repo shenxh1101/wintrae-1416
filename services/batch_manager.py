@@ -42,6 +42,8 @@ class QualityBatch:
                     'conv_id': result.conv_id,
                     'score': result.score,
                     'manual_score': result.manual_score,
+                    'rule_set_id': getattr(result, 'rule_set_id', 'default'),
+                    'rule_set_version': getattr(result, 'rule_set_version', '1.0'),
                     'violations': [
                         {
                             'rule_type': v.rule_type.name,
@@ -198,9 +200,110 @@ class QualityBatch:
                 reviewer_notes=r.get('reviewer_notes', ''),
                 reviewed_by=r.get('reviewed_by', ''),
                 review_time=rt,
+                rule_set_id=r.get('rule_set_id', 'default'),
+                rule_set_version=r.get('rule_set_version', '1.0'),
             )
 
         return agents, conversations, review_results
+
+    def update_with(self,
+                    sampled_conversations: List = None,
+                    all_conversations: List = None,
+                    agents: List = None,
+                    review_results: Dict = None,
+                    sampling_params: Dict = None,
+                    note: str = None,
+                    batch_name: str = None) -> 'QualityBatch':
+        from models import Conversation, Agent, ReviewResult, RuleType, Message, RuleViolation
+
+        self.updated_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if batch_name is not None:
+            self.batch_name = batch_name
+        if note is not None:
+            self.note = note
+        if sampling_params is not None:
+            self.sampling_params = sampling_params
+
+        if sampled_conversations is not None:
+            self.sampled_conv_ids = [c.conv_id for c in sampled_conversations]
+
+            if all_conversations is not None:
+                conversations_data = []
+                conv_map = {c.conv_id: c for c in all_conversations}
+                for cid in self.sampled_conv_ids:
+                    c = conv_map.get(cid)
+                    if c:
+                        conversations_data.append({
+                            'conv_id': c.conv_id,
+                            'agent_id': c.agent_id,
+                            'agent_name': c.agent_name,
+                            'shop': c.shop,
+                            'shift': c.shift.name,
+                            'shift_value': c.shift.value,
+                            'order_status': c.order_status.name,
+                            'order_status_value': c.order_status.value,
+                            'order_id': c.order_id,
+                            'customer_nick': c.customer_nick,
+                            'start_time': c.start_time.strftime('%Y-%m-%d %H:%M:%S') if c.start_time else None,
+                            'end_time': c.end_time.strftime('%Y-%m-%d %H:%M:%S') if c.end_time else None,
+                            'messages': [
+                                {
+                                    'timestamp': m.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                                    'sender': m.sender,
+                                    'sender_type': m.sender_type,
+                                    'content': m.content,
+                                    'is_customer': m.is_customer,
+                                } for m in c.messages
+                            ],
+                            'tags': list(c.tags),
+                        })
+                self.conversations_data = conversations_data
+
+            if agents is not None:
+                agents_data = []
+                for a in agents:
+                    agents_data.append({
+                        'agent_id': a.agent_id,
+                        'name': a.name,
+                        'shop': a.shop,
+                        'shift': a.shift.name,
+                        'shift_value': a.shift.value,
+                        'group': a.group,
+                        'join_date': a.join_date,
+                        'is_active': a.is_active,
+                    })
+                self.agents_data = agents_data
+
+        if review_results is not None:
+            review_dict = {}
+            for cid, result in review_results.items():
+                if cid in self.sampled_conv_ids:
+                    review_dict[cid] = {
+                        'conv_id': result.conv_id,
+                        'score': result.score,
+                        'manual_score': result.manual_score,
+                        'rule_set_id': getattr(result, 'rule_set_id', 'default'),
+                        'rule_set_version': getattr(result, 'rule_set_version', '1.0'),
+                        'violations': [
+                            {
+                                'rule_type': v.rule_type.name,
+                                'rule_type_value': v.rule_type.value,
+                                'description': v.description,
+                                'severity': v.severity,
+                                'related_message_index': v.related_message_index,
+                                'evidence': v.evidence,
+                            } for v in result.violations
+                        ],
+                        'labels': list(result.labels),
+                        'is_excellent': result.is_excellent,
+                        'key_snippets': list(result.key_snippets),
+                        'reviewer_notes': result.reviewer_notes,
+                        'reviewed_by': result.reviewed_by,
+                        'review_time': result.review_time.strftime('%Y-%m-%d %H:%M:%S') if result.review_time else None,
+                    }
+            self.review_results = review_dict
+
+        return self
 
     def get_review_progress(self):
         reviewed = sum(1 for r in self.review_results.values() if r.get('manual_score') is not None)
@@ -303,6 +406,8 @@ class BatchManager:
                     'conv_id': result.conv_id,
                     'score': result.score,
                     'manual_score': result.manual_score,
+                    'rule_set_id': getattr(result, 'rule_set_id', 'default'),
+                    'rule_set_version': getattr(result, 'rule_set_version', '1.0'),
                     'violations': [
                         {
                             'rule_type': v.rule_type.name,

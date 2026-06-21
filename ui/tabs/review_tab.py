@@ -343,10 +343,10 @@ class ReviewTab(QWidget):
             self._select_conv(row_idx)
 
     def _select_conv(self, idx: int):
-        if not (0 <= idx < len(self.conversations)):
+        if not (0 <= idx < len(self.filtered_conversations)):
             return
         self.current_conv_idx = idx
-        conv = self.conversations[idx]
+        conv = self.filtered_conversations[idx]
         result = self.results.get(conv.conv_id)
 
         self.info_conv_id.setText(f"会话: {conv.conv_id}")
@@ -432,7 +432,7 @@ class ReviewTab(QWidget):
             self._select_conv(self.current_conv_idx - 1)
 
     def _on_next(self):
-        if self.current_conv_idx < len(self.conversations) - 1:
+        if self.current_conv_idx < len(self.filtered_conversations) - 1:
             self._select_conv(self.current_conv_idx + 1)
 
     def _on_chat_context_menu(self, pos):
@@ -481,9 +481,9 @@ class ReviewTab(QWidget):
         return [label for label, cb in self.label_checkboxes.items() if cb.isChecked()]
 
     def _on_submit(self):
-        if self.current_conv_idx < 0 or self.current_conv_idx >= len(self.conversations):
+        if self.current_conv_idx < 0 or self.current_conv_idx >= len(self.filtered_conversations):
             return
-        conv = self.conversations[self.current_conv_idx]
+        conv = self.filtered_conversations[self.current_conv_idx]
         data = {
             'conv_id': conv.conv_id,
             'manual_score': float(self.manual_score_spin.value()),
