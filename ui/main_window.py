@@ -175,6 +175,7 @@ class MainWindow(QMainWindow):
         self.sampling_tab.sampling_requested.connect(self._on_sampling_requested)
         self.rule_check_tab.run_check_requested.connect(self._on_run_rule_check)
         self.review_tab.submit_review_requested.connect(self._on_submit_review)
+        self.review_tab.batch_update_requested.connect(self._on_batch_update)
         self.report_tab.generate_report_requested.connect(self._on_generate_report)
         self.report_tab.export_report_requested.connect(self._on_export_report)
         self.current_batch_id: str = None
@@ -259,18 +260,32 @@ class MainWindow(QMainWindow):
                 QMessageBox.warning(self, "提示", "请先完成会话抽样。")
                 return
 
+            rule_set_usage = {}
             for conv in self.sampled_conversations:
-                violations = self.rule_engine.check_all(conv)
+                violations, rule_set = self.rule_engine.check_all(conv)
                 auto_score = self.rule_engine.calculate_score(violations)
                 self.review_service.initialize_review(conv.conv_id, violations, auto_score)
+
+                review = self.review_service.get_review(conv.conv_id)
+                if review:
+                    review.rule_set_id = rule_set.rule_set_id
+                    review.rule_set_version = rule_set.version
+
                 self.review_results[conv.conv_id] = self.review_service.get_review(conv.conv_id)
+
+                rs_key = f"{rule_set.name} (v{rule_set.version})"
+                if rs_key not in rule_set_usage:
+                    rule_set_usage[rs_key] = 0
+                rule_set_usage[rs_key] += 1
 
             self.rule_check_tab.set_check_results(self.sampled_conversations, self.review_results)
             self.review_tab.set_conversations(self.sampled_conversations, self.review_results)
             self.report_tab.set_sampling_summary(self.sampled_conversations, self.review_results)
             self._update_status()
+
+            usage_text = "\n".join([f"  {k}: {v}个样本" for k, v in rule_set_usage.items()])
             QMessageBox.information(self, "检查完成",
-                                    f"已完成 {len(self.sampled_conversations)} 个会话的自动规则检查。")
+                                    f"已完成 {len(self.sampled_conversations)} 个会话的自动规则检查。\n\n规则集使用情况:\n{usage_text}")
         except Exception as e:
             QMessageBox.critical(self, "检查失败", str(e))
 
@@ -297,8 +312,39 @@ class MainWindow(QMainWindow):
             self.review_results[conv_id] = self.review_service.get_review(conv_id)
             self.report_tab.set_sampling_summary(self.sampled_conversations, self.review_results)
             self._update_status()
+
+            if self.current_batch_id:
+                from services import BatchManager
+                bm = BatchManager()
+                success = bm.update_batch_reviews(self.current_batch_id, self.review_results)
+                if success:
+                    reviewed = sum(1 for r in self.review_results.values() if r.manual_score is not None)
+                    total = len(self.sampled_conversations)
+                    self.toolbar_info.setText(f"  批次进度已更新: {reviewed}/{total} ({int(reviewed/max(total,1)*100)}%)")
         except Exception as e:
             QMessageBox.critical(self, "提交失败", str(e))
+
+    def _on_batch_update(self, conv_ids: List[str], update_data: dict):
+        try:
+            for cid in conv_ids:
+                if 'add_label' in update_data:
+                    self.review_service.add_label(cid, update_data['add_label'])
+                if 'mark_training' in update_data:
+                    self.review_service.add_label(cid, '需培训')
+                self.review_results[cid] = self.review_service.get_review(cid)
+
+            self.report_tab.set_sampling_summary(self.sampled_conversations, self.review_results)
+            self._update_status()
+
+            if self.current_batch_id:
+                from services import BatchManager
+                bm = BatchManager()
+                bm.update_batch_reviews(self.current_batch_id, self.review_results)
+
+            self.review_tab.set_conversations(self.sampled_conversations, self.review_results)
+            self.rule_check_tab.set_check_results(self.sampled_conversations, self.review_results)
+        except Exception as e:
+            QMessageBox.critical(self, "批量操作失败", str(e))
 
     def _on_generate_report(self, prefer_manual: bool = True):
         try:
@@ -311,7 +357,7 @@ class MainWindow(QMainWindow):
 
             self.current_report = self.report_service.generate_report(
                 self.sampled_conversations, self.review_results, self.agents,
-                prefer_manual=prefer_manual
+                prefer_manual_score=prefer_manual
             )
             self.report_tab.set_report(self.current_report)
 

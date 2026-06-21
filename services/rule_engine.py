@@ -1,13 +1,14 @@
 import re
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
 from datetime import timedelta
 
-from models import Conversation, Message, RuleViolation, RuleType
+from models import Conversation, Message, RuleViolation, RuleType, RuleSet
 from services.config_manager import ConfigManager
 
 
 class RuleEngine:
     def __init__(self, config: dict = None):
+        self.config_manager = ConfigManager()
         if config:
             self.reply_timeout = config.get('reply_timeout', 180)
             self.forbidden_words = config.get('forbidden_words', [
@@ -31,30 +32,56 @@ class RuleEngine:
                 '退款', '退货', '换货', '补发', '赠送',
                 '优惠', '折扣', '减免',
             ])
+            self._current_rule_set = None
         else:
-            cfg = ConfigManager().get_config()
-            self.reply_timeout = cfg.reply_timeout
-            self.forbidden_words = list(cfg.forbidden_words)
-            self.greeting_patterns = list(cfg.greeting_patterns)
-            self.vague_phrases = list(cfg.vague_phrases)
-            self.solution_keywords = list(cfg.solution_keywords)
+            self.reload_config()
+            self._current_rule_set = None
 
     def reload_config(self):
-        cfg = ConfigManager().get_config()
+        cfg = self.config_manager.get_config()
         self.reply_timeout = cfg.reply_timeout
         self.forbidden_words = list(cfg.forbidden_words)
         self.greeting_patterns = list(cfg.greeting_patterns)
         self.vague_phrases = list(cfg.vague_phrases)
         self.solution_keywords = list(cfg.solution_keywords)
+        self._current_rule_set = None
 
-    def check_all(self, conversation: Conversation) -> List[RuleViolation]:
+    def _get_rule_set_for_conversation(self, conversation: Conversation) -> RuleSet:
+        return self.config_manager.get_rule_set_for_conversation(
+            conversation.shop,
+            conversation.shift.value
+        )
+
+    def _apply_rule_set(self, rule_set: RuleSet):
+        self._current_rule_set = rule_set
+        self.reply_timeout = rule_set.reply_timeout
+        self.forbidden_words = list(rule_set.forbidden_words)
+        self.greeting_patterns = list(rule_set.greeting_patterns)
+        self.vague_phrases = list(rule_set.vague_phrases)
+        self.solution_keywords = list(rule_set.solution_keywords)
+
+    def check_all(self, conversation: Conversation) -> Tuple[List[RuleViolation], RuleSet]:
+        rule_set = self._get_rule_set_for_conversation(conversation)
+        self._apply_rule_set(rule_set)
+
         violations = []
         violations.extend(self._check_timeout_reply(conversation))
         violations.extend(self._check_no_greeting(conversation))
         violations.extend(self._check_vague_promise(conversation))
         violations.extend(self._check_forbidden_words(conversation))
         violations.extend(self._check_no_solution(conversation))
-        return violations
+        return violations, rule_set
+
+    def check_all_with_meta(self, conversation: Conversation) -> Dict[str, Any]:
+        violations, rule_set = self.check_all(conversation)
+        score = self.calculate_score(violations)
+        return {
+            'violations': violations,
+            'score': score,
+            'rule_set_id': rule_set.rule_set_id,
+            'rule_set_name': rule_set.name,
+            'rule_set_version': rule_set.version,
+        }
 
     def calculate_score(self, violations: List[RuleViolation]) -> float:
         score = 100.0
@@ -90,7 +117,7 @@ class RuleEngine:
                 evidence = f"客户消息: {messages[prev_idx].content[:50]}\n客服回复: {messages[last_evidence_idx].content[:50]}"
             violations.append(RuleViolation(
                 rule_type=RuleType.TIMEOUT_REPLY,
-                description=f"检测到 {timeout_count} 次超时回复（阈值: {self.reply_timeout}秒）",
+                description=f"检测到 {timeout_count} 次超时回复（阈值: {self.reply_timeout}秒，规则集: {self._current_rule_set.name if self._current_rule_set else '默认'}）",
                 severity=severity,
                 related_message_index=last_evidence_idx if last_evidence_idx >= 0 else None,
                 evidence=evidence

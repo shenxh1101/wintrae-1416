@@ -233,6 +233,18 @@ class ReportTab(QWidget):
             ("优秀案例数", str(len(report.excellent_cases))),
             ("整改项数", str(len(report.rectification_items))),
         ]
+
+        rule_set_breakdown = getattr(report, 'rule_set_breakdown', {})
+        if rule_set_breakdown:
+            overview_data.append(("--- 规则集汇总 ---", ""))
+            for rs_key, bd in rule_set_breakdown.items():
+                rs_id = rs_key.split('_v')[0]
+                rs_version = rs_key.split('_v')[1] if '_v' in rs_key else '1.0'
+                overview_data.append((
+                    f"  规则集 {rs_id} (v{rs_version})",
+                    f"{bd['count']}个样本, 平均分{bd['avg_score']}, 已复核{bd['reviewed']}"
+                ))
+
         self.overview_table.setRowCount(len(overview_data))
         for r, (k, v) in enumerate(overview_data):
             key_item = QTableWidgetItem(k)

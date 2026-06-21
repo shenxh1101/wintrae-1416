@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QGroupBox,
     QTableWidget, QTableWidgetItem, QHeaderView, QSplitter, QTextEdit,
     QListWidget, QListWidgetItem, QCheckBox, QSpinBox, QLineEdit,
-    QProgressBar, QFrame, QScrollArea, QDialog, QDialogButtonBox
+    QProgressBar, QFrame, QScrollArea, QDialog, QDialogButtonBox,
+    QComboBox, QInputDialog, QMessageBox
 )
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor, QFont, QTextCursor
@@ -14,11 +15,13 @@ from services.review_service import AVAILABLE_LABELS
 
 class ReviewTab(QWidget):
     submit_review_requested = pyqtSignal(dict)
+    batch_update_requested = pyqtSignal(list, dict)
 
     def __init__(self):
         super().__init__()
         self.conversations: List[Conversation] = []
         self.results: Dict[str, ReviewResult] = {}
+        self.filtered_conversations: List[Conversation] = []
         self.current_conv_idx = -1
         self._init_ui()
 
@@ -29,22 +32,83 @@ class ReviewTab(QWidget):
         left_layout = QVBoxLayout(left_widget)
         left_layout.setContentsMargins(5, 5, 5, 5)
 
+        filter_group = QGroupBox("筛选条件")
+        filter_layout = QVBoxLayout(filter_group)
+
+        filter_row1 = QHBoxLayout()
+        filter_row1.addWidget(QLabel("客服:"))
+        self.filter_agent = QComboBox()
+        self.filter_agent.addItem("全部客服")
+        self.filter_agent.currentIndexChanged.connect(self._apply_filters)
+        filter_row1.addWidget(self.filter_agent, 1)
+
+        filter_row1.addWidget(QLabel("状态:"))
+        self.filter_status = QComboBox()
+        self.filter_status.addItems(["全部", "待复核", "已复核"])
+        self.filter_status.currentIndexChanged.connect(self._apply_filters)
+        filter_row1.addWidget(self.filter_status, 1)
+        filter_layout.addLayout(filter_row1)
+
+        filter_row2 = QHBoxLayout()
+        filter_row2.addWidget(QLabel("问题类型:"))
+        self.filter_problem = QComboBox()
+        self.filter_problem.addItem("全部问题")
+        for rt in RuleType:
+            self.filter_problem.addItem(rt.value)
+        self.filter_problem.currentIndexChanged.connect(self._apply_filters)
+        filter_row2.addWidget(self.filter_problem, 1)
+
+        self.btn_clear_filter = QPushButton("清除筛选")
+        self.btn_clear_filter.clicked.connect(self._clear_filters)
+        filter_row2.addWidget(self.btn_clear_filter)
+        filter_layout.addLayout(filter_row2)
+
+        left_layout.addWidget(filter_group)
+
         progress_group = QGroupBox("复核进度")
         progress_layout = QVBoxLayout(progress_group)
         self.progress_bar = QProgressBar()
         self.progress_bar.setValue(0)
         self.progress_label = QLabel("待复核: 0 / 0")
+        self.filtered_label = QLabel("")
+        self.filtered_label.setStyleSheet("color: #666; font-size: 11px;")
         progress_layout.addWidget(self.progress_bar)
         progress_layout.addWidget(self.progress_label)
+        progress_layout.addWidget(self.filtered_label)
         left_layout.addWidget(progress_group)
 
-        conv_group = QGroupBox("样本列表")
+        batch_group = QGroupBox("批量操作")
+        batch_layout = QVBoxLayout(batch_group)
+
+        batch_row = QHBoxLayout()
+        self.btn_select_all = QPushButton("全选")
+        self.btn_select_all.clicked.connect(self._select_all)
+        self.btn_select_none = QPushButton("取消")
+        self.btn_select_none.clicked.connect(self._select_none)
+        batch_row.addWidget(self.btn_select_all)
+        batch_row.addWidget(self.btn_select_none)
+        batch_layout.addLayout(batch_row)
+
+        batch_row2 = QHBoxLayout()
+        self.btn_batch_label = QPushButton("🏷️ 批量打标签")
+        self.btn_batch_label.clicked.connect(self._on_batch_label)
+        self.btn_batch_training = QPushButton("⚠️ 批量标记需培训")
+        self.btn_batch_training.clicked.connect(self._on_batch_training)
+        batch_row2.addWidget(self.btn_batch_label)
+        batch_row2.addWidget(self.btn_batch_training)
+        batch_layout.addLayout(batch_row2)
+
+        left_layout.addWidget(batch_group)
+
+        conv_group = QGroupBox("样本列表 (可多选)")
         conv_layout = QVBoxLayout(conv_group)
-        self.conv_table = QTableWidget(0, 6)
+        self.conv_table = QTableWidget(0, 7)
         self.conv_table.setHorizontalHeaderLabels(
-            ["会话ID", "客服", "系统分", "人工分", "状态", "标签"])
+            ["☑️", "会话ID", "客服", "系统分", "人工分", "状态", "标签"])
         self.conv_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.conv_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
         self.conv_table.setAlternatingRowColors(True)
+        self.conv_table.setSelectionMode(QTableWidget.ExtendedSelection)
         self.conv_table.itemSelectionChanged.connect(self._on_select_conv_row)
         conv_layout.addWidget(self.conv_table)
         left_layout.addWidget(conv_group, 1)
@@ -205,20 +269,36 @@ class ReviewTab(QWidget):
     def set_conversations(self, conversations: List[Conversation], results: Dict[str, ReviewResult]):
         self.conversations = conversations
         self.results = results
+        self.filtered_conversations = list(conversations)
+
+        self.filter_agent.blockSignals(True)
+        self.filter_agent.clear()
+        self.filter_agent.addItem("全部客服")
+        agents = sorted(set(c.agent_name for c in conversations))
+        for agent in agents:
+            self.filter_agent.addItem(agent)
+        self.filter_agent.blockSignals(False)
+
         self._refresh_table()
         if conversations:
             self._select_conv(0)
 
     def _refresh_table(self):
-        self.conv_table.setRowCount(len(self.conversations))
+        conversations = self.filtered_conversations
+        self.conv_table.setRowCount(len(conversations))
         reviewed = 0
-        for row, conv in enumerate(self.conversations):
+        for row, conv in enumerate(conversations):
             r = self.results.get(conv.conv_id)
             auto = r.score if r else 100
             manual = r.manual_score if r and r.manual_score is not None else None
             has_reviewed = manual is not None
             if has_reviewed:
                 reviewed += 1
+
+            checkbox_item = QTableWidgetItem()
+            checkbox_item.setFlags(Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            checkbox_item.setCheckState(Qt.Unchecked)
+            self.conv_table.setItem(row, 0, checkbox_item)
 
             auto_item = QTableWidgetItem(f"{auto:.0f}")
             auto_item.setForeground(QColor(self._score_color(auto)))
@@ -238,18 +318,23 @@ class ReviewTab(QWidget):
             if r and r.is_excellent:
                 labels_text = "⭐ " + labels_text
 
-            self.conv_table.setItem(row, 0, QTableWidgetItem(conv.conv_id))
-            self.conv_table.setItem(row, 1, QTableWidgetItem(conv.agent_name))
-            self.conv_table.setItem(row, 2, auto_item)
-            self.conv_table.setItem(row, 3, manual_item)
-            self.conv_table.setItem(row, 4, status_item)
-            self.conv_table.setItem(row, 5, QTableWidgetItem(labels_text))
+            self.conv_table.setItem(row, 1, QTableWidgetItem(conv.conv_id))
+            self.conv_table.setItem(row, 2, QTableWidgetItem(conv.agent_name))
+            self.conv_table.setItem(row, 3, auto_item)
+            self.conv_table.setItem(row, 4, manual_item)
+            self.conv_table.setItem(row, 5, status_item)
+            self.conv_table.setItem(row, 6, QTableWidgetItem(labels_text))
 
-            self.conv_table.item(row, 0).setData(Qt.UserRole, row)
+            self.conv_table.item(row, 1).setData(Qt.UserRole, row)
 
         total = len(self.conversations)
         self.progress_bar.setValue(int(reviewed / max(total, 1) * 100))
         self.progress_label.setText(f"待复核: {total - reviewed} / {total}  (已完成 {reviewed})")
+
+        if len(self.filtered_conversations) != len(self.conversations):
+            self.filtered_label.setText(f"筛选后显示: {len(self.filtered_conversations)} 条")
+        else:
+            self.filtered_label.setText("")
 
     def _on_select_conv_row(self):
         rows = self.conv_table.selectionModel().selectedRows()
@@ -410,3 +495,106 @@ class ReviewTab(QWidget):
         }
         self.submit_review_requested.emit(data)
         self._refresh_table()
+
+    def _apply_filters(self):
+        agent_filter = self.filter_agent.currentText()
+        status_filter = self.filter_status.currentText()
+        problem_filter = self.filter_problem.currentText()
+
+        filtered = []
+        for conv in self.conversations:
+            if agent_filter != "全部客服" and conv.agent_name != agent_filter:
+                continue
+
+            r = self.results.get(conv.conv_id)
+            has_manual = r and r.manual_score is not None
+            if status_filter == "已复核" and not has_manual:
+                continue
+            if status_filter == "待复核" and has_manual:
+                continue
+
+            if problem_filter != "全部问题" and r:
+                has_problem = any(v.rule_type.value == problem_filter for v in r.violations)
+                if not has_problem:
+                    continue
+
+            filtered.append(conv)
+
+        self.filtered_conversations = filtered
+        self._refresh_table()
+        if filtered:
+            self._select_conv(0)
+
+    def _clear_filters(self):
+        self.filter_agent.blockSignals(True)
+        self.filter_agent.setCurrentIndex(0)
+        self.filter_agent.blockSignals(False)
+        self.filter_status.blockSignals(True)
+        self.filter_status.setCurrentIndex(0)
+        self.filter_status.blockSignals(False)
+        self.filter_problem.blockSignals(True)
+        self.filter_problem.setCurrentIndex(0)
+        self.filter_problem.blockSignals(False)
+        self.filtered_conversations = list(self.conversations)
+        self._refresh_table()
+
+    def _select_all(self):
+        for row in range(self.conv_table.rowCount()):
+            item = self.conv_table.item(row, 0)
+            if item:
+                item.setCheckState(Qt.Checked)
+
+    def _select_none(self):
+        for row in range(self.conv_table.rowCount()):
+            item = self.conv_table.item(row, 0)
+            if item:
+                item.setCheckState(Qt.Unchecked)
+
+    def _get_selected_conv_ids(self) -> List[str]:
+        selected = []
+        for row in range(self.conv_table.rowCount()):
+            item = self.conv_table.item(row, 0)
+            if item and item.checkState() == Qt.Checked:
+                conv = self.filtered_conversations[row]
+                selected.append(conv.conv_id)
+        return selected
+
+    def _on_batch_label(self):
+        selected = self._get_selected_conv_ids()
+        if not selected:
+            QMessageBox.information(self, "提示", "请先勾选要批量操作的会话。")
+            return
+
+        label, ok = QInputDialog.getItem(
+            self, "批量打标签", "选择要添加的标签:",
+            AVAILABLE_LABELS, 0, False
+        )
+        if ok and label:
+            for cid in selected:
+                r = self.results.get(cid)
+                if r and label not in r.labels:
+                    r.labels.append(label)
+            self.batch_update_requested.emit(selected, {'add_label': label})
+            self._refresh_table()
+            QMessageBox.information(self, "操作完成", f"已为 {len(selected)} 个会话添加标签: {label}")
+
+    def _on_batch_training(self):
+        selected = self._get_selected_conv_ids()
+        if not selected:
+            QMessageBox.information(self, "提示", "请先勾选要批量操作的会话。")
+            return
+
+        confirm = QMessageBox.question(
+            self, "确认", f"确定要将 {len(selected)} 个会话的客服标记为需培训吗？",
+            QMessageBox.Yes | QMessageBox.No
+        )
+        if confirm == QMessageBox.Yes:
+            training_label = "需培训"
+            if training_label in AVAILABLE_LABELS:
+                for cid in selected:
+                    r = self.results.get(cid)
+                    if r and training_label not in r.labels:
+                        r.labels.append(training_label)
+            self.batch_update_requested.emit(selected, {'mark_training': True})
+            self._refresh_table()
+            QMessageBox.information(self, "操作完成", f"已标记 {len(selected)} 个会话为需培训。")

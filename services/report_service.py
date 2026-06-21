@@ -91,6 +91,40 @@ class ReportService:
             for c in sampled_conversations
         }
 
+        rule_set_breakdown = defaultdict(lambda: {
+            'count': 0,
+            'reviewed': 0,
+            'avg_score': 0.0,
+            'scores': [],
+            'problems': defaultdict(int),
+            'agent_scores': defaultdict(list),
+        })
+        for conv, review in all_reviews:
+            rs_id = getattr(review, 'rule_set_id', 'default')
+            rs_version = getattr(review, 'rule_set_version', '1.0')
+            key = f"{rs_id}_v{rs_version}"
+            bd = rule_set_breakdown[key]
+            bd['count'] += 1
+            if review.manual_score is not None:
+                bd['reviewed'] += 1
+            final_score = get_final_score(review)
+            bd['scores'].append(final_score)
+            bd['agent_scores'][conv.agent_name].append(final_score)
+            for v in review.violations:
+                bd['problems'][v.rule_type.value] += 1
+
+        for key, bd in rule_set_breakdown.items():
+            if bd['scores']:
+                bd['avg_score'] = round(sum(bd['scores']) / len(bd['scores']), 1)
+            bd['agent_scores'] = {
+                agent: round(sum(scores) / len(scores), 1)
+                for agent, scores in bd['agent_scores'].items()
+            }
+            bd['problems'] = dict(bd['problems'])
+            del bd['scores']
+
+        report.rule_set_breakdown = dict(rule_set_breakdown)
+
         return report
 
     def _identify_training_candidates(
@@ -173,6 +207,7 @@ class ReportService:
             with pd.ExcelWriter(output_path, engine='openpyxl') as writer:
                 summary_data = [{
                     '报告日期': report.report_date,
+                    '报告口径': getattr(report, 'report_mode', '人工复核口径'),
                     '抽样总数': report.total_sampled,
                     '已复核数': report.total_reviewed,
                     '平均得分': report.avg_score,
@@ -207,9 +242,11 @@ class ReportService:
                 if conversations and reviews:
                     detail_rows = []
                     conv_map = {c.conv_id: c for c in conversations}
+                    final_scores = getattr(report, 'final_score_map', {})
                     for conv_id, review in reviews.items():
                         conv = conv_map.get(conv_id)
                         if conv:
+                            final_score = final_scores.get(conv_id, review.score)
                             detail_rows.append({
                                 '会话ID': conv_id,
                                 '客服': conv.agent_name,
@@ -218,6 +255,7 @@ class ReportService:
                                 '订单状态': conv.order_status.value,
                                 '系统评分': review.score,
                                 '人工评分': review.manual_score if review.manual_score is not None else '',
+                                '最终得分': final_score,
                                 '违规项数': len(review.violations),
                                 '标签': ', '.join(review.labels),
                                 '优秀案例': '是' if review.is_excellent else '否',

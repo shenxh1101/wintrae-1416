@@ -81,6 +81,29 @@ class RuleViolation:
 
 
 @dataclass
+class RuleSet:
+    rule_set_id: str
+    name: str
+    description: str = ""
+    shops: List[str] = field(default_factory=list)
+    shifts: List[str] = field(default_factory=list)
+    reply_timeout: int = 180
+    forbidden_words: List[str] = field(default_factory=list)
+    greeting_patterns: List[str] = field(default_factory=list)
+    vague_phrases: List[str] = field(default_factory=list)
+    solution_keywords: List[str] = field(default_factory=list)
+    is_default: bool = False
+    version: str = "1.0"
+    created_time: Optional[str] = None
+    updated_time: Optional[str] = None
+
+    def matches(self, shop: str, shift: str) -> bool:
+        shop_match = not self.shops or shop in self.shops
+        shift_match = not self.shifts or shift in self.shifts
+        return shop_match and shift_match
+
+
+@dataclass
 class ReviewResult:
     conv_id: str
     score: float = 100.0
@@ -92,6 +115,8 @@ class ReviewResult:
     reviewer_notes: str = ""
     reviewed_by: str = ""
     review_time: Optional[datetime] = None
+    rule_set_id: str = "default"
+    rule_set_version: str = "1.0"
 
 
 @dataclass
@@ -107,3 +132,4 @@ class QualityReport:
     rectification_items: List[Dict] = field(default_factory=dict)
     report_mode: str = "人工复核口径"
     final_score_map: Dict[str, float] = field(default_factory=dict)
+    rule_set_breakdown: Dict[str, Dict] = field(default_factory=dict)

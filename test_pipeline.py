@@ -107,9 +107,12 @@ def test_report_modes(conversations):
     engine = RuleEngine()
     review_service = ReviewService()
     for conv in sampled:
-        violations = engine.check_all(conv)
+        violations, rule_set = engine.check_all(conv)
         score = engine.calculate_score(violations)
-        review_service.initialize_review(conv.conv_id, violations, score)
+        review = review_service.initialize_review(conv.conv_id, violations, score)
+        if review:
+            review.rule_set_id = rule_set.rule_set_id
+            review.rule_set_version = rule_set.version
 
     for i, (cid, result) in enumerate(list(review_service.results.items())[:8]):
         if i % 4 == 0:
@@ -250,10 +253,14 @@ def test_consistency_check(conversations):
         agent_msgs = [m for m in conv.messages if not m.is_customer]
         print(f"    客户消息: {len(customer_msgs)}条, 客服消息: {len(agent_msgs)}条")
 
-        violations = engine.check_all(conv)
+        violations, rule_set = engine.check_all(conv)
         timeout_violations = [v for v in violations if v.rule_type.value == "超时回复"]
         solution_violations = [v for v in violations if v.rule_type.value == "未给解决方案"]
 
+        print(f"    使用规则集: {rule_set.name} (v{rule_set.version}, ID: {rule_set.rule_set_id})")
+        print(f"    适用店铺: {rule_set.shops if rule_set.shops else '全部'}")
+        print(f"    适用班次: {rule_set.shifts if rule_set.shifts else '全部'}")
+        print(f"    超时阈值: {rule_set.reply_timeout}秒")
         print(f"    超时回复违规: {len(timeout_violations)}次")
         print(f"    未给解决方案违规: {len(solution_violations)}次")
 
