@@ -160,11 +160,26 @@ class ConfigManager:
         return RuleSet(**(self.config.rule_sets[0])) if self.config.rule_sets else _get_default_rule_set()
 
     def get_rule_set_for_conversation(self, shop: str, shift: str) -> RuleSet:
+        non_default_sets = []
+        default_set = None
         for rs in self.config.rule_sets:
             rule_set = RuleSet(**rs)
+            if rule_set.is_default:
+                default_set = rule_set
+            else:
+                non_default_sets.append(rule_set)
+
+        non_default_sets.sort(key=lambda r: (
+            0 if r.shops else 1,
+            0 if r.shifts else 1,
+            len(r.shops) + len(r.shifts)
+        ))
+
+        for rule_set in non_default_sets:
             if rule_set.matches(shop, shift):
                 return rule_set
-        return self.get_default_rule_set()
+
+        return default_set if default_set else _get_default_rule_set()
 
     def add_rule_set(self, rule_set: RuleSet) -> bool:
         for i, rs in enumerate(self.config.rule_sets):
@@ -177,6 +192,17 @@ class ConfigManager:
     def update_rule_set(self, rule_set_id: str, rule_set: RuleSet) -> bool:
         for i, rs in enumerate(self.config.rule_sets):
             if rs.get('rule_set_id') == rule_set_id:
+                old_version = rs.get('version', '1.0')
+                try:
+                    parts = old_version.split('.')
+                    major = int(parts[0])
+                    minor = int(parts[1]) + 1 if len(parts) > 1 else 1
+                    if minor >= 10:
+                        major += 1
+                        minor = 0
+                    rule_set.version = f"{major}.{minor}"
+                except Exception:
+                    rule_set.version = "1.1"
                 rule_set.updated_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 if rule_set.is_default:
                     for other_rs in self.config.rule_sets:

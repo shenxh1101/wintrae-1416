@@ -240,9 +240,23 @@ class ReportTab(QWidget):
             for rs_key, bd in rule_set_breakdown.items():
                 rs_id = rs_key.split('_v')[0]
                 rs_version = rs_key.split('_v')[1] if '_v' in rs_key else '1.0'
+                display_id = "默认规则" if rs_id == 'default' else rs_id
+                top_problems = sorted(bd['problems'].items(), key=lambda x: x[1], reverse=True)[:3]
+                problems_text = '; '.join([f"{k}({v})" for k, v in top_problems]) if top_problems else '无'
+                training_text = '; '.join(bd['training_list'][:3]) if bd['training_list'] else '无'
+                if len(bd['training_list']) > 3:
+                    training_text += f" 等{len(bd['training_list'])}人"
                 overview_data.append((
-                    f"  规则集 {rs_id} (v{rs_version})",
-                    f"{bd['count']}个样本, 平均分{bd['avg_score']}, 已复核{bd['reviewed']}"
+                    f"📌 {display_id} (v{rs_version})",
+                    f"{bd['count']}个样本, 平均分{bd['avg_score']}, 已复核{bd['reviewed']}/{bd['count']}"
+                ))
+                overview_data.append((
+                    f"   常见问题TOP3:",
+                    problems_text
+                ))
+                overview_data.append((
+                    f"   待培训客服:",
+                    training_text
                 ))
 
         self.overview_table.setRowCount(len(overview_data))

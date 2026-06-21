@@ -57,11 +57,19 @@ class ReviewTab(QWidget):
             self.filter_problem.addItem(rt.value)
         self.filter_problem.currentIndexChanged.connect(self._apply_filters)
         filter_row2.addWidget(self.filter_problem, 1)
+        filter_layout.addLayout(filter_row2)
+
+        filter_row3 = QHBoxLayout()
+        filter_row3.addWidget(QLabel("规则集:"))
+        self.filter_rule_set = QComboBox()
+        self.filter_rule_set.addItem("全部规则集")
+        self.filter_rule_set.currentIndexChanged.connect(self._apply_filters)
+        filter_row3.addWidget(self.filter_rule_set, 1)
 
         self.btn_clear_filter = QPushButton("清除筛选")
         self.btn_clear_filter.clicked.connect(self._clear_filters)
-        filter_row2.addWidget(self.btn_clear_filter)
-        filter_layout.addLayout(filter_row2)
+        filter_row3.addWidget(self.btn_clear_filter)
+        filter_layout.addLayout(filter_row3)
 
         left_layout.addWidget(filter_group)
 
@@ -278,6 +286,23 @@ class ReviewTab(QWidget):
         for agent in agents:
             self.filter_agent.addItem(agent)
         self.filter_agent.blockSignals(False)
+
+        self.filter_rule_set.blockSignals(True)
+        self.filter_rule_set.clear()
+        self.filter_rule_set.addItem("全部规则集")
+        rule_sets = {}
+        for c in conversations:
+            r = results.get(c.conv_id)
+            if r:
+                rs_id = getattr(r, 'rule_set_id', 'default')
+                rs_version = getattr(r, 'rule_set_version', '1.0')
+                key = f"{rs_id}_v{rs_version}"
+                display = f"默认规则 v{rs_version}" if rs_id == 'default' else f"{rs_id} v{rs_version}"
+                if key not in rule_sets:
+                    rule_sets[key] = (display, rs_id)
+        for key, (display, rs_id) in rule_sets.items():
+            self.filter_rule_set.addItem(display, key)
+        self.filter_rule_set.blockSignals(False)
 
         self._refresh_table()
         if conversations:
@@ -500,6 +525,7 @@ class ReviewTab(QWidget):
         agent_filter = self.filter_agent.currentText()
         status_filter = self.filter_status.currentText()
         problem_filter = self.filter_problem.currentText()
+        rule_set_data = self.filter_rule_set.currentData()
 
         filtered = []
         for conv in self.conversations:
@@ -516,6 +542,13 @@ class ReviewTab(QWidget):
             if problem_filter != "全部问题" and r:
                 has_problem = any(v.rule_type.value == problem_filter for v in r.violations)
                 if not has_problem:
+                    continue
+
+            if rule_set_data and r:
+                rs_id = getattr(r, 'rule_set_id', 'default')
+                rs_version = getattr(r, 'rule_set_version', '1.0')
+                key = f"{rs_id}_v{rs_version}"
+                if key != rule_set_data:
                     continue
 
             filtered.append(conv)
@@ -535,6 +568,9 @@ class ReviewTab(QWidget):
         self.filter_problem.blockSignals(True)
         self.filter_problem.setCurrentIndex(0)
         self.filter_problem.blockSignals(False)
+        self.filter_rule_set.blockSignals(True)
+        self.filter_rule_set.setCurrentIndex(0)
+        self.filter_rule_set.blockSignals(False)
         self.filtered_conversations = list(self.conversations)
         self._refresh_table()
 

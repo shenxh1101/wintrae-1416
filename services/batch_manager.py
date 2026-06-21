@@ -21,6 +21,7 @@ class QualityBatch:
     conversations_data: List[dict] = field(default_factory=dict)
     sampling_params: Dict = field(default_factory=dict)
     note: str = ""
+    rule_sets_snapshot: Dict[str, dict] = field(default_factory=dict)
 
     @staticmethod
     def create(batch_name: str,
@@ -30,10 +31,31 @@ class QualityBatch:
                review_results: Dict[str, ReviewResult],
                sampling_params: Dict = None,
                note: str = "") -> 'QualityBatch':
+        from services import ConfigManager
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         batch_id = f"BATCH{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
         conv_ids = [c.conv_id for c in sampled_conversations]
+
+        rule_sets_snapshot = {}
+        try:
+            cm = ConfigManager()
+            for rs in cm.get_rule_sets():
+                rule_sets_snapshot[rs.rule_set_id] = {
+                    'rule_set_id': rs.rule_set_id,
+                    'name': rs.name,
+                    'description': rs.description,
+                    'shops': list(rs.shops),
+                    'shifts': list(rs.shifts),
+                    'reply_timeout': rs.reply_timeout,
+                    'forbidden_words_count': len(rs.forbidden_words),
+                    'forbidden_words_preview': rs.forbidden_words[:10],
+                    'version': rs.version,
+                    'is_default': rs.is_default,
+                    'snapshot_time': now,
+                }
+        except Exception:
+            pass
 
         review_dict = {}
         for cid, result in review_results.items():
@@ -116,6 +138,7 @@ class QualityBatch:
             conversations_data=conversations_data,
             sampling_params=sampling_params or {},
             note=note,
+            rule_sets_snapshot=rule_sets_snapshot,
         )
 
     def to_entities(self):

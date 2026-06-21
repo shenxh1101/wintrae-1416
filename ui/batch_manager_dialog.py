@@ -300,17 +300,43 @@ class BatchManagerDialog(QDialog):
         batch = self.batch_manager.load_batch(batch_id)
         if batch:
             progress = batch.get_review_progress()
-            detail = (
-                f"📌 批次ID: {batch.batch_id}\n"
-                f"📝 批次名称: {batch.batch_name}\n"
-                f"⏰ 创建时间: {batch.created_time}\n"
-                f"🔄 最后更新: {batch.updated_time}\n"
-                f"📊 抽样数: {progress['total']}\n"
-                f"✅ 已复核: {progress['reviewed']}\n"
-                f"⏳ 待复核: {progress['pending']}\n"
-                f"📈 完成进度: {progress['progress']:.1f}%\n"
-                f"📄 备注: {batch.note or '无'}"
-            )
+            lines = [
+                f"📌 批次ID: {batch.batch_id}",
+                f"📝 批次名称: {batch.batch_name}",
+                f"⏰ 创建时间: {batch.created_time}",
+                f"🔄 最后更新: {batch.updated_time}",
+                f"📊 抽样数: {progress['total']}",
+                f"✅ 已复核: {progress['reviewed']}",
+                f"⏳ 待复核: {progress['pending']}",
+                f"📈 完成进度: {progress['progress']:.1f}%",
+                f"📄 备注: {batch.note or '无'}",
+            ]
+
+            rs_snapshot = getattr(batch, 'rule_sets_snapshot', {})
+            if rs_snapshot:
+                lines.append("")
+                lines.append("=== 📋 批次创建时的规则集版本 ===")
+                for rs_id, rs_data in rs_snapshot.items():
+                    default_tag = " ⭐默认" if rs_data.get('is_default') else ""
+                    scope = []
+                    if rs_data.get('shops'):
+                        scope.append(f"店铺:{','.join(rs_data['shops'][:3])}{'...' if len(rs_data['shops']) > 3 else ''}")
+                    else:
+                        scope.append("店铺:全部")
+                    if rs_data.get('shifts'):
+                        scope.append(f"班次:{','.join(rs_data['shifts'][:3])}{'...' if len(rs_data['shifts']) > 3 else ''}")
+                    else:
+                        scope.append("班次:全部")
+                    lines.append(
+                        f"  🔧 {rs_data.get('name', rs_id)} (v{rs_data.get('version', '1.0')}){default_tag}\n"
+                        f"     适用: {'; '.join(scope)}\n"
+                        f"     超时阈值: {rs_data.get('reply_timeout', '-')}秒\n"
+                        f"     禁用话术: {rs_data.get('forbidden_words_count', 0)}个"
+                    )
+                    if rs_data.get('description'):
+                        lines.append(f"     描述: {rs_data['description']}")
+
+            detail = "\n".join(lines)
             self.detail_label.setText(detail)
 
     def _on_load_selected(self):

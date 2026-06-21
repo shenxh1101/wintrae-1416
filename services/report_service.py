@@ -98,6 +98,8 @@ class ReportService:
             'scores': [],
             'problems': defaultdict(int),
             'agent_scores': defaultdict(list),
+            'agent_pass_count': defaultdict(lambda: [0, 0]),
+            'training_list': [],
         })
         for conv, review in all_reviews:
             rs_id = getattr(review, 'rule_set_id', 'default')
@@ -110,6 +112,9 @@ class ReportService:
             final_score = get_final_score(review)
             bd['scores'].append(final_score)
             bd['agent_scores'][conv.agent_name].append(final_score)
+            if final_score >= self.SCORE_THRESHOLD_PASS:
+                bd['agent_pass_count'][conv.agent_name][0] += 1
+            bd['agent_pass_count'][conv.agent_name][1] += 1
             for v in review.violations:
                 bd['problems'][v.rule_type.value] += 1
 
@@ -120,8 +125,18 @@ class ReportService:
                 agent: round(sum(scores) / len(scores), 1)
                 for agent, scores in bd['agent_scores'].items()
             }
+            rs_training = []
+            for agent, scores in bd['agent_scores'].items():
+                passed, total = bd['agent_pass_count'].get(agent, [0, len(bd['scores'])])
+                if total >= self.MIN_SAMPLES_FOR_TRAINING:
+                    avg = bd['agent_scores'][agent]
+                    pass_rate = passed / total if total > 0 else 0
+                    if avg < self.SCORE_THRESHOLD_ATTENTION or pass_rate < self.PASS_RATE_FOR_TRAINING:
+                        rs_training.append(f"{agent}(平均分:{avg},合格率:{int(pass_rate*100)}%)")
+            bd['training_list'] = rs_training
             bd['problems'] = dict(bd['problems'])
             del bd['scores']
+            del bd['agent_pass_count']
 
         report.rule_set_breakdown = dict(rule_set_breakdown)
 
@@ -239,6 +254,27 @@ class ReportService:
                 rect_df = pd.DataFrame(report.rectification_items)
                 rect_df.to_excel(writer, sheet_name='整改清单', index=False)
 
+                rule_set_breakdown = getattr(report, 'rule_set_breakdown', {})
+                if rule_set_breakdown:
+                    rs_rows = []
+                    for rs_key, bd in rule_set_breakdown.items():
+                        top_problems = sorted(bd['problems'].items(), key=lambda x: x[1], reverse=True)[:5]
+                        problems_text = '; '.join([f"{k}({v}次)" for k, v in top_problems])
+                        training_text = '; '.join(bd['training_list']) if bd['training_list'] else '无'
+                        pass_count = sum(1 for s in bd['agent_scores'].values() if s >= self.SCORE_THRESHOLD_PASS)
+                        pass_rate = round(pass_count / max(len(bd['agent_scores']), 1) * 100, 1)
+                        rs_rows.append({
+                            '规则集/版本': rs_key,
+                            '样本数': bd['count'],
+                            '已复核数': bd['reviewed'],
+                            '平均得分': bd['avg_score'],
+                            '合格率(%)': pass_rate,
+                            '涉及客服数': len(bd['agent_scores']),
+                            '常见问题TOP5': problems_text,
+                            '待培训客服': training_text,
+                        })
+                    pd.DataFrame(rs_rows).to_excel(writer, sheet_name='规则版本汇总', index=False)
+
                 if conversations and reviews:
                     detail_rows = []
                     conv_map = {c.conv_id: c for c in conversations}
@@ -247,12 +283,16 @@ class ReportService:
                         conv = conv_map.get(conv_id)
                         if conv:
                             final_score = final_scores.get(conv_id, review.score)
+                            rs_id = getattr(review, 'rule_set_id', 'default')
+                            rs_version = getattr(review, 'rule_set_version', '1.0')
                             detail_rows.append({
                                 '会话ID': conv_id,
                                 '客服': conv.agent_name,
                                 '店铺': conv.shop,
                                 '班次': conv.shift.value,
                                 '订单状态': conv.order_status.value,
+                                '规则集': '默认规则' if rs_id == 'default' else rs_id,
+                                '规则版本': rs_version,
                                 '系统评分': review.score,
                                 '人工评分': review.manual_score if review.manual_score is not None else '',
                                 '最终得分': final_score,

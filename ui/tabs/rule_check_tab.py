@@ -38,10 +38,11 @@ class RuleCheckTab(QWidget):
 
         left_group = QGroupBox("规则检查结果汇总")
         left_layout = QVBoxLayout(left_group)
-        self.summary_table = QTableWidget(0, 7)
+        self.summary_table = QTableWidget(0, 8)
         self.summary_table.setHorizontalHeaderLabels(
-            ["会话ID", "客服", "系统评分", "违规项数", "超时回复", "禁用话术", "其他问题"])
+            ["会话ID", "客服", "规则集", "系统评分", "违规项数", "超时回复", "禁用话术", "其他问题"])
         self.summary_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.summary_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
         self.summary_table.setAlternatingRowColors(True)
         self.summary_table.itemSelectionChanged.connect(self._on_select_conv)
         left_layout.addWidget(self.summary_table)
@@ -50,6 +51,15 @@ class RuleCheckTab(QWidget):
         right_widget = QWidget()
         right_layout = QVBoxLayout(right_widget)
         right_layout.setContentsMargins(0, 0, 0, 0)
+
+        rs_info_group = QFrame()
+        rs_info_group.setStyleSheet("background-color: #fff3e0; border-radius: 4px;")
+        rs_info_layout = QHBoxLayout(rs_info_group)
+        rs_info_layout.setContentsMargins(8, 6, 8, 6)
+        self.rs_info_label = QLabel("📌 选择会话查看使用的规则集信息")
+        self.rs_info_label.setWordWrap(True)
+        rs_info_layout.addWidget(self.rs_info_label)
+        right_layout.addWidget(rs_info_group)
 
         detail_group = QGroupBox("详细违规信息")
         detail_layout = QVBoxLayout(detail_group)
@@ -97,10 +107,18 @@ class RuleCheckTab(QWidget):
         self.conversations = conversations
         self.summary_table.setRowCount(len(conversations))
 
+        rs_usage = {}
         for row, conv in enumerate(conversations):
             result = results.get(conv.conv_id)
             score = result.score if result else 100
             violations = result.violations if result else []
+
+            rs_id = getattr(result, 'rule_set_id', 'default')
+            rs_version = getattr(result, 'rule_set_version', '1.0')
+            rs_key = f"{rs_id}_v{rs_version}"
+            if rs_key not in rs_usage:
+                rs_usage[rs_key] = 0
+            rs_usage[rs_key] += 1
 
             score_item = QTableWidgetItem(f"{score:.0f}")
             score_item.setForeground(self._score_color(score))
@@ -108,32 +126,42 @@ class RuleCheckTab(QWidget):
             f.setBold(True)
             score_item.setFont(f)
 
+            rs_display = f"{rs_id} v{rs_version}"
+            if rs_id == 'default':
+                rs_display = "默认规则"
+            rs_item = QTableWidgetItem(rs_display)
+            if rs_id != 'default':
+                rs_item.setForeground(QColor("#1976D2"))
+                rs_item.setFont(f)
+
             self.summary_table.setItem(row, 0, QTableWidgetItem(conv.conv_id))
             self.summary_table.setItem(row, 1, QTableWidgetItem(conv.agent_name))
-            self.summary_table.setItem(row, 2, score_item)
+            self.summary_table.setItem(row, 2, rs_item)
+            self.summary_table.setItem(row, 3, score_item)
 
             vcount_item = QTableWidgetItem(str(len(violations)))
             if len(violations) > 0:
                 vcount_item.setForeground(QColor("#F44336"))
-            self.summary_table.setItem(row, 3, vcount_item)
+            self.summary_table.setItem(row, 4, vcount_item)
 
             has_timeout = any(v.rule_type == RuleType.TIMEOUT_REPLY for v in violations)
             has_forbidden = any(v.rule_type == RuleType.FORBIDDEN_WORDS for v in violations)
 
-            self.summary_table.setItem(row, 4, QTableWidgetItem("⚠是" if has_timeout else ""))
-            self.summary_table.setItem(row, 5, QTableWidgetItem("⚠是" if has_forbidden else ""))
+            self.summary_table.setItem(row, 5, QTableWidgetItem("⚠是" if has_timeout else ""))
+            self.summary_table.setItem(row, 6, QTableWidgetItem("⚠是" if has_forbidden else ""))
 
             other = "，".join([
                 v.rule_type.value for v in violations
                 if v.rule_type not in [RuleType.TIMEOUT_REPLY, RuleType.FORBIDDEN_WORDS]
             ])
-            self.summary_table.setItem(row, 6, QTableWidgetItem(other))
+            self.summary_table.setItem(row, 7, QTableWidgetItem(other))
 
             self.summary_table.item(row, 0).setData(Qt.UserRole, conv.conv_id)
 
         avg_score = sum(results[c.conv_id].score for c in conversations) / max(len(conversations), 1)
+        rs_summary = " | ".join([f"{k}: {v}" for k, v in rs_usage.items()])
         self.summary_label.setText(
-            f"检查完成: {len(conversations)} 个会话 | 平均得分: {avg_score:.1f}"
+            f"检查完成: {len(conversations)} 个会话 | 平均得分: {avg_score:.1f} | 规则集使用: {rs_summary}"
         )
 
         self._current_results = results
@@ -158,6 +186,17 @@ class RuleCheckTab(QWidget):
 
         if not result:
             return
+
+        rs_id = getattr(result, 'rule_set_id', 'default')
+        rs_version = getattr(result, 'rule_set_version', '1.0')
+        rs_display = "默认规则集" if rs_id == 'default' else f"规则集ID: {rs_id}"
+        if conv:
+            self.rs_info_label.setText(
+                f"📌 <b>{rs_display}</b> (v{rs_version})<br>"
+                f"店铺: {conv.shop} | 班次: {conv.shift.value}"
+            )
+        else:
+            self.rs_info_label.setText(f"📌 <b>{rs_display}</b> (v{rs_version})")
 
         try:
             self.violation_list.itemClicked.disconnect()
